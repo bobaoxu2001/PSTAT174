@@ -16,7 +16,7 @@ cov(x,y)
 ```
 X and y are uncorrelated since cor(x,y) = 0.06219732 which is very close to zero.
 
-X and Y are not dependent since cov(x,y) is not equal to 0. 
+X and Y are clearly dependent since  y = x^2.
 
 It could happen that two variables are uncorrelated but not dependent.
 
