@@ -1,0 +1,12 @@
+---
+title: "pstat274_hw01_aoxu"
+author: "AO XU"
+date: "2022-10-04"
+output: html_document
+---
+
+Problem 4
+```{r}
+polyroot(c(1,-2))
+polyroot(c(1,-0.45,0.05))
+```
