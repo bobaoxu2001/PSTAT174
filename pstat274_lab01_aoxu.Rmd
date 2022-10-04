@@ -1,0 +1,52 @@
+---
+title: "PSTAT274 Lab 01"
+author: "AO XU"
+date: "2022-10-03"
+output: html_document
+---
+
+
+Q1
+```{r}
+set.seed(100)
+x = runif(1000,-1,1)
+y = x^2
+cor(x,y)
+cov(x,y)
+```
+X and y are uncorrelated since cor(x,y) = 0.06219732 which is very close to zero.
+
+X and Y are not dependent since cov(x,y) is not equal to 0. 
+
+It could happen that two variables are uncorrelated but not dependent.
+
+Q2
+```{r}
+set.seed(1011)
+x1 = runif(10,-1,1)
+x2 = runif(100,-1,1)
+x3 = runif(1000,-1,1)
+mean(x1)
+mean(x2)
+mean(x3)
+```
+As sample size increases, sample mean is approaching to the true mean.
+
+Q3
+```{r}
+n =100
+rows = 1000
+sim = matrix(runif(n*rows,-1,1),rows)
+sample.mean = rowMeans(sim)
+hist(sample.mean)
+```
+mean = 0, variance = 1/300 by using central limit theorem, it's normal distribution
+
+Q4 
+```{r}
+uspop = scan("uspop.txt")
+uspop
+plot(uspop/1000000, type = "o", main = "US population", xlab = "Year", ylab = "Population", lwd = 2)
+plot(sqrt(uspop/1000000), type = "o", main = "US population", xlab = "Year", ylab = "Population", lwd = 2)
+```
+For the sqrt, the graph is more linear。
