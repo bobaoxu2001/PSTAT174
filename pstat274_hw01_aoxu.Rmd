@@ -10,3 +10,34 @@ Problem 4
 polyroot(c(1,-2))
 polyroot(c(1,-0.45,0.05))
 ```
+
+Problem 6
+```{r}
+# a
+Z<- rnorm(300)
+plot.ts(Z, xlab="Time", ylab="Z")
+```
+```{r}
+acf(Z, main="ACF")
+```
+```{r}
+# b
+Y<- Z^2
+plot.ts(Y, xlab="Time", ylab="Y")
+```
+```{r}
+acf(Y, main="ACF")
+```
+
+# 6c
+c1) There’s a difference between the plots of graphs of time series Z and Y that the graph of z is symmetrically distributed around 0 while the graph of Y is all above 0. 
+
+But both of they are stationary since both of them have no trend or seasonality.
+
+c2) There is no noticeable difference in the plots of acf functions ρZ and ρY. I would describe Y as a non-Gaussian white noise sequence based on my plots since 
+it has 0 constant mean, variance and it is uncorrelated.
+```{r}
+# d
+mean(Y)
+mean(Z)
+```
