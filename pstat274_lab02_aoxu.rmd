@@ -2,7 +2,7 @@
 title: "pstat274-lab02-aoxu"
 author: "AO XU"
 date: "2022-10-10"
-output: pdf_document
+output: html_document
 ---
 
 
@@ -14,7 +14,7 @@ No, it doesn't have to be Gaussian.
 
 # Problem 2:
 
-The absolute value of yt is less than xt. It suggests that Moving Average as a data processing technique can help determine the underlying trend, and reduce the effect of random variation.
+Yes, there is a difference that variability of Moving Avg is smaller than WN. It suggests that Moving Average as a data processing technique can reduce the effect of random variation and help to determine the underlying trend.
 
 ```{r}
 z_t <- rnorm(200,0,1)
