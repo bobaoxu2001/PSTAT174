@@ -1,0 +1,34 @@
+---
+title: "pstat274-lab02-aoxu"
+author: "AO XU"
+date: "2022-10-10"
+output: pdf_document
+---
+
+
+# Problem 1:
+
+A white noise process is a random process of random variables that are uncorrelated, have mean zero, and a finite variance.
+
+No, it doesn't have to be Gaussian.
+
+# Problem 2:
+
+The absolute value of yt is less than xt. It suggests that Moving Average as a data processing technique can help determine the underlying trend, and reduce the effect of random variation.
+
+```{r}
+z_t <- rnorm(200,0,1)
+y_t = filter(z_t, filter = rep(1/3,3), sides = 2, method = "convolution")
+acf(y_t, na.action = na.pass, main="ACF")
+```
+
+# Problem 3:
+```{r}
+x_t <- filter(z_t,filter = c(1,-0.9),method = "recursive")
+plot(x_t,xlab = "t",ylab = expression(x[t]),type = "l", main = "Autoregressive Model")
+```
+
+```{r}
+x1 = arima.sim(n = 600, model = list(ar=c(1,-0.9))) 
+plot.ts(x1, main="Autoregressive Model")
+```
