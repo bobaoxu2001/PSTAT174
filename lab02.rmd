@@ -1,0 +1,39 @@
+---
+title: "lab02"
+author: "AO XU"
+date: "2022-10-10"
+output: html_document
+---
+
+# Problem 1
+Random error that is following gausian with mean zero. And no, in general they only have to be iid with mean zero.
+```{r}
+z_t <- rnorm(200,0,1)
+plot(z_t,xlab = "t",ylab = expression(z[t]),type = "l",main = "White Noise")
+```
+
+# Problem 2
+
+Yes, there is a difference that variability of Moving Avg is smaller than WN.
+```{r}
+y_t = filter(z_t, filter = rep(1/3,3), sides = 2, method = "convolution")
+# Plot of white-noise
+plot(z_t,xlab = "t",ylab = expression(X[t]),type = "l",main = "Moving Average")
+# Plot of moving-average
+lines(y_t,col = "blue")
+# Add legend
+legend("topright",c("WN", "Moving Avg."),col = c("black","blue"),lty = 1)
+acf(y_t[-c(1,200)])
+```
+
+
+# Problem3 
+```{r}
+x_t <- filter(z_t,filter = c(1,-0.9),method = "recursive")
+plot(x_t,xlab = "t",ylab = expression(x[t]),type = "l", main = "Autoregressive Model")
+```
+
+```{r}
+x1 = arima.sim(n = 600, model = list(ar=c(1,-0.9))) 
+plot.ts(x1, main="Autoregressive Model")
+```
