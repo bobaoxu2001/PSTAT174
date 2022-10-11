@@ -7,7 +7,7 @@ output: html_document
 
 # Problem 1
 
-E is correct, data set I and II exhibit statistically significant autocorrelations since k $\neq$ 0 and p > 1.
+E is correct, data set I and II exhibit statistically significant autocorrelations since k $\neq$ 0 and $\rho$ > 1.
 
 # Problem 2
 
