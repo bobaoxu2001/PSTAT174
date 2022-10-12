@@ -129,7 +129,7 @@ xt <- arima.sim(list(ma=c(1,2,-8)),n=300)
 acf(xt, main="ACF")
 acf(xt, main="ACF")$acf[3]
 -8/69
-# Since -0.1424422 is nearly the same as -0.115942, then my sample estimate of ρX(2) are nearly the same as its true value found by calculations.
+# Since -0.09597174 is nearly the same as -0.115942, then my sample estimate of ρX(2) are nearly the same as its true value found by calculations.
 ```
 
 ```{r}
@@ -174,41 +174,24 @@ The variance in (c) is smaller than in (b) and closer to 0.
 
 Example 1: $X_t$ = 3$X_{t-1}$ + 3$X_{t-2}$ + $Z_t$
 ```{r}
-xt <- arima.sim(list(ma=c(1,3,3)),n=100)
+xt <- arima.sim(list(ma=c(3,3)),n=100)
 acf(xt, main="ACF")
 plot(xt)
 ```
 
 Example 2: $X_t$ = 5$X_{t-1}$ - 8$X_{t-2}$ + $Z_t$
 ```{r}
-xt <- arima.sim(list(ma=c(1,5,-8)),n=100)
+xt <- arima.sim(list(ma=c(5,-8)),n=100)
 acf(xt, main="ACF")
 plot(xt)
 ```
 
 # G3
 
-$E({e}^{\displaystyle \sum_{i=1}^{n}a_ix_i})$ = E(exp($a_1$($Z_1$+$\theta$$Z_0$)+$a_2$($Z_2$+$\theta$$Z_1$)+...+$a_n$($Z_n$+$\theta$$Z_{n-1}$))) = E(exp($a_1$$\theta$$Z_0$))E(exp($a_1$+$a_2\theta$)$Z_1$))...E(exp($a_n$$Z_n$)) = m($\theta$$a_1$)m($a_1$+$theta$$a_2$)...m($a_{n-1}$+$\theta$$a_n$)m$a_n$
+$E({e}^{\displaystyle \sum_{i=1}^{n}a_ix_i})$ = E(exp($a_1$($Z_1$+$\theta$$Z_0$)+$a_2$($Z_2$+$\theta$$Z_1$)+...+$a_n$($Z_n$+$\theta$$Z_{n-1}$))) = E(exp($a_1$$\theta$$Z_0$))E(exp($a_1$+$a_2\theta$)$Z_1$))...E(exp($a_n$$Z_n$)) = m($\theta$$a_1$)m($a_1$+$\theta$$a_2$)...m($a_{n-1}$+$\theta$$a_n$)m$a_n$
 
 We find that the MGF of $x_1$,$x_2$,...,$x_n$ depends on $a_1$,$a_2$...$a_n$ and $\theta$ but not t, so $X_t$ is strictly stationary. 
 
-E($X_t$) = E($Z_t$+$\theta$$Z_{t-1}$) = E($Z_t$)+E($\theta$$Z_{t-1}$) = 0 + $\theta(0)$ = 0;
-
-Cov($X_{t+h}$,$X_t$) =  Cov($Z_{t+h}$+$\theta$$Z_{t+h-1}$,$Z_{t}$+$\theta$$Z_{t-1}$) = Cov($Z_{t+h},Z_t$) + $\theta$Cov($Z_{t+h},Z_{t-1}$) + $\theta$Cov($Z_{t+h-1},Z_t$) + $\theta^2$Cov($Z_{t+h-1},Z_{t-1}$) = E($Z_{t+h}Z_{t}$)+$\theta$E($Z_{t+h}Z_{t-1}$)+$\theta$E($Z_{t+h-1}Z_{t}$)+$\theta^2$E($Z_{t+h-1},Z_{t-1}$)
-
-When h = 0, E($Z_t^2$) = Var($Z_t$) - $E(Z_t)^2$ = $\sigma_z^2$, then Cov($X_{t+h}$,$X_t$) = $\sigma_z^2$ + $\theta^2$$\sigma_z^2$;
-
-When h = $\pm1$, Cov($X_{t+h}$,$X_t$) = $\theta$;
-
-When h is other numbers, Cov($X_{t+h}$,$X_t$) = 0;
-
-Then, we could get $\gamma_x(t+h,h)$ = Cov($X_{t+h}$,$X_t$) =  
-$$\begin{cases} 
-  \sigma_Z^2 + \theta^2\sigma_Z^2 & h = 0\\ 
-  \theta & h = \pm1\\
-  0 & other numbers
-\end{cases}$$
-
-Since $\mu$ is independent of t and $\gamma_x(t+h,h)$ is also independent of t, then $X_t$ is weakly stationary.
+Then $X_t$ is weakly stationary since strictly stationary means weakly stationary.
 
 Therefore, $X_t$ is s both weakly and strictly stationary.
