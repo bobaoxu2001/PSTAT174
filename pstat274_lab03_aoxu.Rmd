@@ -1,0 +1,67 @@
+---
+title: "pstat274_lab03_aoxu"
+author: "AO XU"
+date: "2022-10-17"
+output: html_document
+---
+
+1.(a)
+
+Solution: $(1-0.8B+0.12B^2)X_t = Z_t$
+
+(b)
+
+Solution: 
+
+```{r}
+polyroot(c(1,-0.8,0.12))
+```
+Since the roots are outside of the unit circle, then we could get that it's a casual AR(2), and also invertible since AR model is invertible.
+
+(c)
+
+Solution:
+```{r}
+set.seed(1234)
+ar2 <- arima.sim(model = list(ar = c(0.8,-0.12),sd=1),n=200)
+
+?ARMAacf
+theo_acf <- ARMAacf(ar = c(0.8,-0.12),lag.max = 20, pacf = FALSE)
+op <- par(mfrow = c(1,2))
+
+acf(ar2,lag.max = 20,
+        main = "Sample ACF",
+        ylim = c(-1,1),
+        xlab = "h",
+        ylab = expression(hat(rho)[X](h)))
+pacf(ar2,lag.max = 20,
+        main = "Sample PACF",
+        ylim = c(-1,1),
+        xlab = "h",
+        ylab = expression(hat(rho)[X](h)))
+```
+
+(d)
+
+Solution:
+
+```{r}
+acv_ar <- acf(ar2,type = "covariance",main = "Sample ACF",plot = F) 
+Rho <- toeplitz(acv_ar$acf[c(1,2)]/acv_ar$acf[1])
+rho <- acv_ar$acf[c(2,3)]/acv_ar$acf[1]
+phi_hat <- solve(Rho)%*%rho
+phi_hat
+```
+
+```{r}
+sigma_z <- acv_ar$acf[1]*(1-t(rho)%*%solve(Rho)%*%rho) 
+sigma_z
+```
+
+
+```{r}
+# parameter estimates
+ar.yw(ar2)
+```
+
+Therefore, $\hat{\phi_1}$ = 0.9210879, $\hat{\phi_2}$ = -0.2011451, $\hat{\sigma_z}^2$ = 1.024407, and predictor estimators are 0.9210879, -0.2011451, and 1.040007.
