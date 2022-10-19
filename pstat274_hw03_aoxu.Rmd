@@ -1,8 +1,16 @@
 ---
 title: "pstat274_hw03_aoxu"
 author: "AO XU"
-date: "2022-10-12"
+date: "2022-10-18"
 output: html_document
 ---
+
+# Problem 1 
+
+$X_t$ = ${2 \over 3} X_{t-1}$ + ${1 \over 2} X_{t-2}$ + $Z_t$
+
+```{r}
+polyroot(c(1, -2/3, -0.5))
+```
 
 
