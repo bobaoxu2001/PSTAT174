@@ -9,8 +9,74 @@ output: html_document
 
 $X_t$ = ${2 \over 3} X_{t-1}$ + ${1 \over 2} X_{t-2}$ + $Z_t$
 
+
+Since it's AR(2) model, then it's invertible since AR(2) is always invertible.
+
+Then, $\phi(z)$ = 1 - ${2 \over 3} z$ - ${1 \over 2} z^2$
 ```{r}
 polyroot(c(1, -2/3, -0.5))
 ```
+Since 0<0.8968053 < 1, then it's not stationary.
 
+Therefore, it's not stationary but invertible.
 
+# Problem 2
+
+Only the statement II is true.
+
+I is false: For AR(3), the pacf at lag3, $\alpha(3)$ = $\phi_{33}$ $\neq$ 0, so I is false.
+
+II is true: The lag(4) for AR(3) must be 0 since there is no term after lag(3).
+
+III is false: If partial Autocorrelation for lag 4 is greater than zero, then it's not AR(3).
+
+# Problem 3
+
+$X_t - \phi_1X_{t-1} = Z_t + \theta_1Z_{t-1}$
+
+From lecture slide, we could get that $\rho_x(k) = {(\phi_1+\theta_1)(1+\phi_1\theta_1)\over(1+2\phi_1\theta_1+\theta_1^2)} \phi_1^{k-1}$.
+
+Then since $\rho_x(1)$ = 0.7 and $\rho_x(2)$ = 0.73, we could get that $\rho_x(1)$ = ${(\phi_1+\theta_1)(1+\phi_1\theta_1)\over(1+2\phi_1\theta_1+\theta_1^2)}$ = 0.7 while $\rho_x(2)$ = ${(\phi_1+\theta_1)(1+\phi_1\theta_1)\over(1+2\phi_1\theta_1+\theta_1^2)} \phi_1$ = 0.3.
+
+Therefore, we get $\phi_1$ = $\rho_x(2)\over \rho_x(1)$ = $0.3\over 0.7$ = $3\over 7$
+
+# Problem 4
+
+Since $\phi_{11}=-0.60$, $\phi_{22}=0.36$, and $\phi_{kk}=0$ for $k \geq 3$, 
+
+then we could get that it's AR(2) model and $\phi_2 = \phi_{22} = 0.36 =$ ${\rho_x(2) - (\rho_x(1))^2}\over {1-(\rho_x(1))^2}$. $\rho_x(1)=\phi_{11}=-0.6$. So we get $\rho_x(2) = 0.5904$.
+
+By using Yule-Walker equations, we get that
+
+$$ \left\{
+\begin{aligned}
+\rho_x(1) & = & \phi_1 + \phi_2\rho_x(1) = -0.6 \\
+\rho_x(2) & = & \phi_1\rho_x(1) + \phi_2 = 0.5904
+\end{aligned}
+\right.
+$$
+Then we get that $\phi_1=-0.384$ and $\phi_2=0.36$.
+
+Therefore, $X_t = -0.384X_{t-1} + 0.36X_{t-2}+ Z_t$ where $Z_t$ ~ $WN(0,\sigma_z^2)$
+
+# Problem 5
+
+A is true.
+
+Since $X_t = 0.8X_{t-1}+2+Z_t-0.5Z_{t-1}$, then we get $\phi_1 = 0.8$ and $\theta_1 =-0.5$
+
+$\rho_x(1)$ = ${(\phi_1+\theta_1)(1+\phi_1\theta_1)\over(1+2\phi_1\theta_1+\theta_1^2)}$ = ${(0.8-0.5)(1-0.4)\over(1+2(-0.4)+0.25)}$ = 0.4
+
+B is true.
+
+$\rho_x(k) = {(\phi_1+\theta_1)(1+\phi_1\theta_1)\over(1+2\phi_1\theta_1+\theta_1^2)} \phi_1^{k-1}$, since $\phi_1=0.8<1$, then we get that $\phi_1^{k-1} < 1$ for all $k \geq 2$, then $\rho_x(k) < \rho_x(1)$
+
+C is true.
+
+It follows the model that $X_t - \phi_1X_{t-1} = Z_t -\theta_1Z_{t-1}$ where $\phi_1=-0.8$ and $\theta_1=0.5$, then it's ARMA(1,1).
+
+D is true.
+
+$\phi_z$ = 1-0.8Z = 0, then $\phi_1 = 0.8<1$, so it's stationary.
+
+E 
