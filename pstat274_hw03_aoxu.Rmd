@@ -61,6 +61,8 @@ Therefore, $X_t = -0.384X_{t-1} + 0.36X_{t-2}+ Z_t$ where $Z_t$ ~ $WN(0,\sigma_z
 
 # Problem 5
 
+Only E is false.
+
 A is true.
 
 Since $X_t = 0.8X_{t-1}+2+Z_t-0.5Z_{t-1}$, then we get $\phi_1 = 0.8$ and $\theta_1 =-0.5$
@@ -79,4 +81,64 @@ D is true.
 
 $\phi_z$ = 1-0.8Z = 0, then $\phi_1 = 0.8<1$, so it's stationary.
 
-E 
+E is false.
+
+$\mu$ = ${C}\over{1-\phi_1}$ = $2\over 0.2$ = 10 $\neq$ 2
+
+# Problem 6
+
+I and III are parameter redundant.
+
+I   
+
+$X_t$ = $1\over2$$X_{t-1}$ + $Z_t$ - $1\over2$$Z_{t-1}$
+
+It could be converted to $X_t$-$1\over2$$X_{t-1}$ = $Z_t$ - $1\over2$$Z_{t-1}$, since $\phi(z) = 1 - {z\over2} = \theta(z)$. So they share one common factor,  then it is parameter redundant.
+
+II 
+
+$X_t$ = $1\over2$$X_{t-1}$ + $Z_t$ - $1\over9$$Z_{t-2}$
+
+It could be converted to $X_t$-$1\over2$$X_{t-1}$ = $Z_t$ - $1\over9$$Z_{t-2}$, since $\phi(z) = 1 - {z\over2}$ $\theta(z) = 1 - {z^2\over 9}$. They don't share the common factor, then it's not parameter redundant.
+
+III
+
+$X_t$ = $-5\over6$$X_{t-1}$ - $1\over6$$X_{t-2}$ + $Z_t$ +$8\over12$$Z_{t-1}$+ $1\over12$$Z_{t-2}$
+
+Since $\phi(z)$ = 1+${5z}\over 6$+${z^2}\over 6$ = (1+$z \over2$)(1+$z \over3$),
+
+$\theta(z)$ = 1+${8z}\over 12$+${z^2}\over 12$ = (1+$z \over2$)(1+$z \over6$),
+
+they share one common factor 1+$z \over6$ so it's parameter redundant.
+
+# GE 1
+
+$X_t$ = $Z_t$ + $\theta Z_{t-1}$, $Z_t$ ~ WN(0,$\sigma^2$)
+$\gamma_x(k)$ = $Cov(X_t,X_{t+k})$ = $E((Z_t+\theta Z_{t-1})(Z_{t+k}+\theta Z_{t+k-1}))$ = $E(Z_t Z_{t+k})+\theta(E(Z_t Z_{t+k-1}+E(Z_{t-1} Z_{t+k})) + \theta^2 E(Z_{t-1} Z_{t+k-1})$ 
+
+$$ \left\{
+\begin{aligned}
+= & \sigma^2 (1+\theta)^2 & k=0\\
+\ = & \sigma^2 \theta & |k|=1 \\
+\ = & 0  & otherwise
+\end{aligned}
+\right.
+$$
+$\gamma_y(k)$ = $Cov(Y_t,Y_{t+k})$ = $E((Z_t+\theta^{-1} Z_{t-1})(Z_{t+k}+\theta^{-1} Z_{t+k-1}))$ = $\gamma_z(k) + \theta_1 \gamma_z (k+1) + \theta^{-1} \gamma_z(k-1) + \theta^{-2}\gamma_z(k)$ 
+$$ \left\{
+\begin{aligned}
+= & \sigma^2 (1+\theta)^2 & k=0\\
+\ = & \sigma^2 \theta & |k|=1 \\
+\ = & 0  & otherwise
+\end{aligned}
+\right.
+$$
+
+Then we get that $\gamma_x(k) = \gamma_y(k)$.
+
+# GE 2
+
+$X_t = \phi X_{t-1} + Z_t$
+$Y_t = X_{2t}$ = $\phi X_{2t-1-1} +Z_{2t-1}+Z_{2t}$ = $\phi^2 X_{2t-2} + \phi Z_{2t-1} + Z_{2t}$ = $\phi^2 Y_{t-1} + \phi Z_{2t-1} + Z_{2t}$
+
+Then, we get that $\phi^* = \phi^2$ and $Z_t^* = \phi Z_{2t-1} + Z_{2t}$
