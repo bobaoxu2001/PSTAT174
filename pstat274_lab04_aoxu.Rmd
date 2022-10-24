@@ -1,0 +1,73 @@
+---
+title: "pstat274_lab04_aoxu"
+author: "AO XU"
+date: "2022-10-24"
+output: html_document
+---
+
+```{r}
+wine.csv = read.table("monthly-australian-wine-sales-th.csv",
+sep=",", header=FALSE, skip=1, nrows=187)
+```
+
+```{r}
+head(wine.csv)
+```
+# Problem 1
+
+(1)
+```{r}
+wine1 = ts(wine.csv[,2], start = c(1980,1))
+wine = ts(wine.csv[,2], start = c(1980,1), frequency = 12)
+```
+
+```{r}
+ts.plot(wine1)
+ts.plot(wine)
+```
+It's easier to see the seasonal trend by using frequency=12 since the year gap in the time line is 5 years per block.
+
+(2)
+frequency = 365 since it's daily data.
+
+2.
+
+```{r}
+#install.packages("devtools")
+#install.packages("forecast")
+#devtools::install_github("FinYang/tsdl")
+library(tsdl)
+library(forecast)
+```
+
+```{r}
+meta_tsdl$description[[1]]
+iowa.ts <- tsdl[[1]]
+```
+
+```{r}
+# Box-Cox Tranformation
+library(MASS)
+t = 1:length(iowa.ts)
+fit = lm(iowa.ts ~ t)
+bcTransform = boxcox(iowa.ts ~ t,plotit = TRUE)
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+iowa.ts.bc = (1/lambda)*(wine^lambda-1)
+```
+
+```{r}
+#log transform
+iowa.ts.log = log(iowa.ts)
+# square root transform
+iowa.ts.sqrt = sqrt(iowa.ts)
+#Compare transforms
+op= par(mfrow=c(2,2))
+ts.plot(iowa.ts, main = "Original Times Series")
+ts.plot(iowa.ts.bc, main = "Box-Cox Transform")
+ts.plot(iowa.ts.log, main = "Log Transform")
+ts.plot(iowa.ts.sqrt, main = "Square Root Transform")
+```
+
+
+
+

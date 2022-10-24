@@ -1,0 +1,181 @@
+---
+title: "pstat274_hw04_aoxu"
+author: "AO XU"
+date: "2022-10-21"
+output: html_document
+---
+
+# Problem 1
+
+Answer: Only II
+
+I. A plot of the series detects a linear trend and increasing variability.
+
+It cannot be written as the form $X_t = X_{t-1} + Z_{t}$ which is random walk then it could not be represented as random walk.
+
+II. The differenced series follows a white noise model.
+
+$Z_t  = W_t = X_t - X_{t-1}$ $\Longrightarrow$ $X_t = X_{t-1} + Z_{t}$, since it follows the random walk that $X_t = X_{t-1} + Z_{t}$ then it could be represented as random walk.
+
+III. The standard deviation of the original series is greater than the standard deviation of the differenced series.
+
+Also, it cannot be written as the form $X_t = X_{t-1} + Z_{t}$ which is random walk then it could not be represented as random walk.
+
+Therefore, only II could be written as random walk.
+
+# Problem 2
+
+Identify the following time series model as a specific ARIMA or SARIMA model:
+
+(a) $X_t = 1.5X_{t-1} - 0.5X_{t-2} + Z_{t} - 0.1Z_{t-1}$
+
+$\Longrightarrow$ $X_t - 1.5X_{t-1} + 0.5X_{t-2}$ = $(1-1.5B+0.5B^2)X_t$ = $(1-0.5B)(1-B)X_t$ = $(1-0.1B)Z_t$
+
+So it's ARIMA (1,1,1) model where p = q = d = 1.
+
+(b) $X_t = 0.5X_{t−1} + X_{t−4} − 0.5X_{t−5} + Z_t − 0.3Z_{t−1}$
+
+$\Longrightarrow$ $X_t - 0.5X_{t-1} - X_{t-4} +0.5X_{t-5} = Z_t -0.3_{t-1}$
+
+$\Longrightarrow$ $(1-0.5B-B^4+0.5B^5)X_{t}$ = $(1-0.5B)(1-B^4)X_{t}$ = $(1-0.3B)Z_{t}$
+
+So it's SARIMIA $(1,0,1) * (0,1,0)_{4}$ model.
+
+# Problem 3
+
+a.(i)
+
+$SARIMA (2, 1, 1) × (0, 1, 1)_{6}$
+
+p = 2, d = 1, q = 1; P = 0, D = 1, Q = 1; s = 6
+
+$\phi(B)\Phi(B^s)(1 − B)^d(1 − B^s)^DX_t = \theta(B)\Theta(B^s)Z_t$
+
+$\Rightarrow$ $(1-\phi_1B+\phi_2B^2)(1-B)(1-B^6)X_t=(1+\theta_1B)(1+\Theta_1B^6)Z_t$
+
+(ii) $SARIMA (1, 1, 2) × (2, 0, 1)_{4}$
+
+p = 1, d = 1, q = 2; P = 2, D = 0, Q = 1; s = 4
+
+$\phi(B)\Phi(B^s)(1 − B)^d(1 − B^s)^DX_t = \theta(B)\Theta(B^s)Z_t$
+
+$\Rightarrow$ $(1-\phi_1B)(1-\Phi_1B^4-\Phi_2B^8)(1-B)X_t = (1+\theta_1B+\theta_2B^2)(1+\theta_1B^4)Z_t$
+
+b.(i)
+
+$(1−B^6)^2X_t = (1−0.3B)Z_t$
+
+It's $SARIMA (0,0,1) × (0,2,0)_6$
+
+(ii) $X_t = 0.3X_t−12 + Z_t;$
+
+It's $SARIMA (0,0,0) × (1,0,0)_{12}$.
+
+(c) You are given a time series model where PACF is zero except for lags 12 and 24. Which model will have this
+pattern?
+
+Solutions: $\alpha(n) = \phi_{nm} \neq 0$, $X_t-\Phi_1X_{t-12}-\Phi_1X_{t-24}=Z_t$ $\Rightarrow$ $(1-\Phi_1B^{12}-\Phi_2B^{24})X_t=Z_t$, so we get that p = 2, P = d = q = D = Q = 0, s = 12.
+
+Therefore, It's $SARIMA (0,0,0) × (2,0,0)_{12}$.
+
+4. Write the form of the model equation for a $SARIMA (0, 0, 1) × (0, 0, 1)_{12}$ model.
+
+Option E.
+
+Solution: Since it's $SARIMA (0,0,1) × (0,0,1)_{12}$, then we get that p = d = P = Q = 0 and d = D = 1.
+
+So we get that $X_t=\theta(B)\Theta B^{12}Z_{t}=(1+\theta_1B)(1+\theta_2B^{12})Z_t$ =$(1+\theta_1B+\theta_2B^{12}+\theta_1\theta_2B^{13})Z_t = Z_t+\theta_1B_{t-1}+\theta_2Z_{t-12}+\theta_1\theta_2Z_{t-13}$.
+
+Therefore, we choose the option E.
+
+5. You are given PACF for two stationary processes:
+
+(a) For time series ${X_t, t = 1, 2, . . .}$: $\phi_{11} = 0, \phi_{22} = 0.36, \phi_{kk} = 0$ for k ≥ 3.
+
+Since $\phi_{11} = 0, \phi_{22} = 0.36, \phi_{kk} = 0$ for k ≥ 3., then we get that it's AR(2).
+
+$\phi_{11} = \rho_x(1) = 0$
+
+$\phi_{22} =$ ${\rho_x(2) - (\rho_x(1))^2}\over {1-(\rho_x(1))^2} = 0.36$ $\Rightarrow$ $\rho_x(2)=0.36$
+
+$$ \left\{
+\begin{aligned}
+\rho_x(1) = \phi_1 + \phi_2\rho_x(1) \\
+\rho_x(2) = \phi_1\rho_x(1) + \phi_2
+\end{aligned}
+\right.
+$$
+
+$\Rightarrow$
+
+$$ \left\{
+\begin{aligned}
+\phi_1 = 0 \\
+\phi_2 = 0.36
+\end{aligned}
+\right.
+$$
+
+Therefore, it's AR(2) model with $X_t = 0.36X_{t-2} + Z_t$ and $Z_t$~$WN(0,\sigma_z^2)$.
+
+(b) For time series ${Y_t, t = 1, 2, . . .}$ : $\phi_{11} = 0.7, \phi_{kk} = 0$ for k ≥ 2.
+
+Since $\phi_{11} = 0.7, \phi{kk} = 0$ for k ≥ 2, we get that it's AR(1) model.
+
+$\rho_x(1)=\phi_{11}=0.7$.
+
+Therefore, it's AR(1) model with $X_t = 0.7X_{t-1} + Z_t$ and $Z_t$~$WN(0,\sigma_z^2)$.
+
+# GE(1)
+
+(a)
+
+$\gamma_Y(k)=Cov(Y_t,Y_{t+k})=E(Y_tY_{t+k})-E(Y_t)E(Y_{t+k})$=$E((X_t+W_t)(X_{t+k}+W_{t+k}))-E(X_t+W_{t})+E(X_{t+k}+W_{t+k}))$=$E(X_tX_{t+k})+E(X_tW_{t+k}))+E(X_{t+k}W_{t})+E(W_tW_{t+k})-0$ 
+
+$Var(Y_t)=E({Y_t}^2)-(E(Y_t))^2$ = $E({Y_t}^2)$ = $E((X_t+W_t)^2)$ = $E({X_t}^2+2X_tW_t+{W_t}^2)$ = ${\sigma_z^2\over {1-\phi^2}}+{\sigma_w}^2$. Then it's AR(1) model and stationary.
+
+(b)
+
+$U_t=Y_t-\phi Y_{t-1}=(X_t+W_t)-\phi(X_{t-1}+W_{t-1})=X_t+W_t-\phi W_{t-1}-\phi W_{t-1}=Z_t+W_t-\phi W_{t-1}$ $\Rightarrow$ $MA(1)$
+
+(c)
+
+$Y_t-\phi Y_{t-1} = \mu_t$
+
+$\mu_t=V_t+\theta V_{t-1},V_t$~$WN(0,\sigma_v^2)$ 
+
+$\sigma_v^2(1+\theta^2)=\sigma_z^2+(1+\phi^2)\sigma_w^2$  
+
+$\sigma_v^2=-\phi \sigma_2^2$
+
+$\Rightarrow$ $1\over {1+\theta^2}$ = $-\phi \sigma_w^2 \over {\sigma_z^2+(1+\phi^2)\sigma_w^2}$
+
+# GE 2. 
+
+Find the ACVF, ACF and PACF for {Xt} when Xt = ΦXt−4 + Zt, |Φ| < 1.
+
+$X_t = \Phi X_{t-4}+Z_t, \Phi<1$
+
+$\gamma_x(k)=E(X_tX_{t-k})=E((\Phi X_{t-4}+Z_t)X_{t-k})=$
+
+$$ \left\{
+\begin{aligned}
+\Phi \gamma_x(k_b) && k \geq 1 \\
+\Phi \gamma_x(k_b) + E(Z_t X_t) && k= 0
+\end{aligned}
+\right.
+$$
+
+$X_t=(1-\Phi B^6)^{-1}Z_t=\sum_{i=0}^{\infty} (\Phi B^6)^iZ_t=\sum_{i=0}^{\infty} \Phi^i Z_{t-6i}$
+
+$\gamma_x(k)=E(X_t,X_{t-k})=E((\sum_{i=0}^{\infty} \Phi^6 Z_{t-6i})(\sum_{j=0}^{\infty} \Phi^j Z_{t-6j-k}))=\sum_{i=0}^{\infty}\sum_{j=0}^{\infty} \Phi^{i+j} E(Z_{t-6i} Z_{t-6i-k})$.
+
+Therefore, we get that ACF is $\rho_x(k)=$ $\gamma_x(k) \over \gamma_x(0)$ =
+
+$$ \left\{
+\begin{aligned}
+\Phi^{i+j} && k = 6,12,18,24 \\
+0 &&  otherwise
+\end{aligned}
+\right.
+$$
