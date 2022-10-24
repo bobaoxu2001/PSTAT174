@@ -52,7 +52,7 @@ t = 1:length(iowa.ts)
 fit = lm(iowa.ts ~ t)
 bcTransform = boxcox(iowa.ts ~ t,plotit = TRUE)
 lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
-iowa.ts.bc = (1/lambda)*(wine^lambda-1)
+iowa.ts.bc = (1/lambda)*(iowa.ts^lambda-1)
 ```
 
 ```{r}
