@@ -136,19 +136,29 @@ $Var(Y_t)=E({Y_t}^2)-(E(Y_t))^2$ = $E({Y_t}^2)$ = $E((X_t+W_t)^2)$ = $E({X_t}^2+
 
 (b)
 
-$U_t=Y_t-\phi Y_{t-1}=(X_t+W_t)-\phi(X_{t-1}+W_{t-1})=X_t+W_t-\phi W_{t-1}-\phi W_{t-1}=Z_t+W_t-\phi W_{t-1}$ $\Rightarrow$ $MA(1)$
+$U_t=Y_t-\phi Y_{t-1}=(X_t+W_t)-\phi(X_{t-1}+W_{t-1})=X_t+W_t-\phi W_{t-1}-\phi W_{t-1}=Z_t+W_t-\phi W_{t-1}$
+
+$\gamma_u(t,t+k)=cov(\mu_y+\mu_{t+k})=cov(Y_t-\phi Y_{t-1},Y_{t+k}-\phi Y_{t+k-1})=cov(Y_t,Y_{t+k})-\phi cov(Y_t,Y_{t+k-1})-\phi cov(Y_{t-1},Y_{t+k})+ \phi^2 cov(Y_{t-1},Y_{t+k-1}) = (1+\phi^2) \gamma_Y(k) -\phi \gamma_Y (k-1) -\phi \gamma_Y (k+1)$
 
 (c)
 
-$Y_t-\phi Y_{t-1} = \mu_t$
+$Y_t-\phi Y_{t-1} = V_t+\theta V_{t-1}, V_t$~$WN(0,\sigma_v^2)$
 
-$\mu_t=V_t+\theta V_{t-1},V_t$~$WN(0,\sigma_v^2)$ 
+$\sigma_v^2(1+\theta^2)=\sigma_z^2+(1-\phi^2)\sigma_w^2$  
 
-$\sigma_v^2(1+\theta^2)=\sigma_z^2+(1+\phi^2)\sigma_w^2$  
+$\theta \sigma_v^2=-\phi \sigma_w^2$
 
-$\sigma_v^2=-\phi \sigma_2^2$
+$\Rightarrow$ $1\over {1+\theta^2}$ = $-\phi \sigma_w^2 \over {\sigma_z^2+(1-\phi^2)\sigma_w^2}$ = $-\phi \over {\sigma_z^2 \over \sigma_w^2} +1-\phi^2$
 
-$\Rightarrow$ $1\over {1+\theta^2}$ = $-\phi \sigma_w^2 \over {\sigma_z^2+(1+\phi^2)\sigma_w^2}$
+Let A = ${\sigma_z^2 \over \sigma_w^2} +1-\phi^2$.
+
+$\Rightarrow$ $1\over {1+\theta^2}$ = $-\phi \over A$ $\Rightarrow$ $A \theta =-\phi -\phi \theta^2$ $\Rightarrow$ $A \theta +\phi +\phi \theta^2 = 0$ $\Rightarrow$ $\theta =$ $-A \pm \sqrt{A^2-4\phi^2} \over 2\phi$
+
+Therefore, $\theta =$ $- ({\sigma_z^2 \over \sigma_w^2} +1-\phi^2) \pm \sqrt{({\sigma_z^2 \over \sigma_w^2} +1-\phi^2)^2-4\phi^2} \over 2\phi$
+
+$\sigma_v=$ $\sqrt{-\phi \sigma_w^2 \over\theta}$
+
+$\phi = \phi$
 
 # GE 2. 
 

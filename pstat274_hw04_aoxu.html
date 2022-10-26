@@ -511,17 +511,34 @@ stationary.</p>
 </ol>
 <p><span class="math inline">\(U_t=Y_t-\phi
 Y_{t-1}=(X_t+W_t)-\phi(X_{t-1}+W_{t-1})=X_t+W_t-\phi W_{t-1}-\phi
-W_{t-1}=Z_t+W_t-\phi W_{t-1}\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(MA(1)\)</span></p>
+W_{t-1}=Z_t+W_t-\phi W_{t-1}\)</span></p>
+<p><span class="math inline">\(\gamma_u(t,t+k)=cov(\mu_y+\mu_{t+k})=cov(Y_t-\phi
+Y_{t-1},Y_{t+k}-\phi Y_{t+k-1})=cov(Y_t,Y_{t+k})-\phi
+cov(Y_t,Y_{t+k-1})-\phi cov(Y_{t-1},Y_{t+k})+ \phi^2
+cov(Y_{t-1},Y_{t+k-1}) = (1+\phi^2) \gamma_Y(k) -\phi \gamma_Y (k-1)
+-\phi \gamma_Y (k+1)\)</span></p>
 <ol start="3" style="list-style-type: lower-alpha">
 <li></li>
 </ol>
-<p><span class="math inline">\(Y_t-\phi Y_{t-1} = \mu_t\)</span></p>
-<p><span class="math inline">\(\mu_t=V_t+\theta
-V_{t-1},V_t\)</span>~<span class="math inline">\(WN(0,\sigma_v^2)\)</span></p>
-<p><span class="math inline">\(\sigma_v^2(1+\theta^2)=\sigma_z^2+(1+\phi^2)\sigma_w^2\)</span></p>
-<p><span class="math inline">\(\sigma_v^2=-\phi \sigma_2^2\)</span></p>
+<p><span class="math inline">\(Y_t-\phi Y_{t-1} = V_t+\theta V_{t-1},
+V_t\)</span>~<span class="math inline">\(WN(0,\sigma_v^2)\)</span></p>
+<p><span class="math inline">\(\sigma_v^2(1+\theta^2)=\sigma_z^2+(1-\phi^2)\sigma_w^2\)</span></p>
+<p><span class="math inline">\(\theta \sigma_v^2=-\phi
+\sigma_w^2\)</span></p>
 <p><span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(1\over {1+\theta^2}\)</span> = <span class="math inline">\(-\phi \sigma_w^2 \over
-{\sigma_z^2+(1+\phi^2)\sigma_w^2}\)</span></p>
+{\sigma_z^2+(1-\phi^2)\sigma_w^2}\)</span> = <span class="math inline">\(-\phi \over {\sigma_z^2 \over \sigma_w^2}
++1-\phi^2\)</span></p>
+<p>Let A = <span class="math inline">\({\sigma_z^2 \over \sigma_w^2}
++1-\phi^2\)</span>.</p>
+<p><span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(1\over {1+\theta^2}\)</span> = <span class="math inline">\(-\phi \over A\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(A
+\theta =-\phi -\phi \theta^2\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(A
+\theta +\phi +\phi \theta^2 = 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(\theta =\)</span> <span class="math inline">\(-A
+\pm \sqrt{A^2-4\phi^2} \over 2\phi\)</span></p>
+<p>Therefore, <span class="math inline">\(\theta =\)</span> <span class="math inline">\(- ({\sigma_z^2 \over \sigma_w^2} +1-\phi^2) \pm
+\sqrt{({\sigma_z^2 \over \sigma_w^2} +1-\phi^2)^2-4\phi^2} \over
+2\phi\)</span></p>
+<p><span class="math inline">\(\sigma_v=\)</span> <span class="math inline">\(\sqrt{-\phi \sigma_w^2 \over\theta}\)</span></p>
+<p><span class="math inline">\(\phi = \phi\)</span></p>
 </div>
 <div id="ge-2." class="section level1">
 <h1>GE 2.</h1>
