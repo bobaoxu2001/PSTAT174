@@ -37,18 +37,18 @@ c.
 
 Since it's one seasonal differencing, then we get that D=1 at lag s=12. And ddmilk applied one differencing to remove trend, so d=1. From acf, there is one peak at 1, so Q is 1. From PACF, there are peaks at 1,2 or 4. So P could be 1 or 2 or 4. For 0-1 from both ACF and PACF, there are no peaks. Then we get 
 
-SAPIMA (0, 1, 0) x (1, 1, 1)s = 12
+SARIMA (0, 1, 0) x (1, 1, 1$)_{s=12}$
 
-SAPIMA (0, 1, 0) x (2, 1, 1)s = 12
+SARIMA (0, 1, 0) x (2, 1, 1$)_{s=12}$
 
-SAPIMA (0, 1, 0) x (4, 1, 1)s = 12
+SARIMA (0, 1, 0) x (4, 1, 1$)_{s=12}$
 
 d.
 
 ```{r}
 library(astsa)
 #library(sarima)
-fit.i <- sarima( xdata = prodn,
+fit.i <- sarima( xdata = milk,
                  p = 0, d = 1, q = 0,
                  P = 1 , D = 1, Q = 1, S = 12,
                  details = F)
