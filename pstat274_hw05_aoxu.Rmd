@@ -1,0 +1,158 @@
+---
+title: "pstat274_hw05_aoxu"
+author: "AO XU"
+date: "2022-11-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. A glossary of R-commands for time series.
+
+#### define working directory
+
+getwd()
+
+#### read and plot data
+
+read.csv() 
+
+ts.plot()
+
+#### simulate and plot ARMA models
+
+$x_1$ <- arima.sim(n = 100,model = list(ma=c($\theta_1$,$\theta_2$))) 
+
+plot(X1)
+
+#### add trend and mean line to the original time series plot
+
+abline(lm(data~as.numeric(1:length(data))))
+
+abline(lm(data~as.numeric(1:length(data))))
+
+#### calculate and plot theoretical acf/pacf for ARMA models
+
+plot(ARMAacf(ar=. . . ,ma=. . . ,lag.max=. . . ,pacf=T/F))
+
+#### calculate and plot sample acf/pacf
+
+acf or pacf(model,lag.max=. . . , plot=T/F)
+
+#### check whether a particular model is causal/invertible (R commands to find and plot roots of polynomials)
+
+polyroot(c(. . . ))
+
+#### perform Box-Cox transforms
+
+boxcox(data~as.numeric(1:length(data)) # library(MASS)
+
+#### perform differencing data at lags 1 and 12
+
+diff(x,lag = 1) diff(x, lag = 12)
+
+#### perform Yule-Walker estimation and find standard deviations of the estimates
+
+data.ywest<- arima(data, aic = TRUE, order.max = NULL, method=c(“yule-walker”))
+
+sqrt(data.ywest$var.pred)
+
+####  perform MLE and check AICC associated with the model
+
+arima(data, aic = TRUE, order.max = NULL, method = c(“mle”))
+
+AICc()
+
+## 2. Choose a dataset that you will be interested to analyze for your class final project.
+
+## 3.
+
+Option A.
+
+```{r}
+ts_data <- ts(c(3.53,1.33,1.85,0.61,0.98,3.61,3.44,3.38,2.91,2.12,4.62,2.93),frequency = 4, start = 2018)
+plot(ts_data)
+```
+```{r}
+library(forecast) 
+ndiffs(ts_data)
+```
+So z = 0
+
+```{r}
+X1 = 2.91
+X2 = 0.98
+X3 = 3.53
+Xt = 2.637 + 0.252*(X1 - 2.637) + 0.061*(X2 - 2.637) - 0.202*(X3 - 2.637) + 0
+Xt
+```
+
+Since 2.424333 < 3.0, then we choose A.
+
+## 4.
+
+AR(1) model with mean 0: $\rho(2)}$ = 0.215, $\rho(3)$ = −0.100, $X_T$ = −0.431
+
+Solution:
+
+Since $\rho(3)$ = −0.100, then $\phi < 0$.
+```{r}
+phi = -sqrt(0.215)
+XT = -0.431
+XTplus1 = XT*phi
+XTplus1
+```
+## 5.
+
+The five models, AR(1), ARMA(1, 1), ARMA(1, 2), ARMA(2, 3), and ARMA(4, 3) are fitted to the same time series.
+The models are ranked using Akaike Information Criterion (AIC): AIC = −2× log-likelihood + 2 ×(p + q + 2).
+
+```{r}
+AR1 = -650
+ARMA11 = -641
+ARMA12 = -636
+ARMA23 = -630
+ARMA43 = -629
+AIC_AR1 = -2 * AR1 + 2*(1+0+2)
+AIC_ARMA11 = -2 * ARMA11 + 2*(1+1+2)
+AIC_ARMA12 = -2 * ARMA12 + 2*(1+2+2)
+AIC_ARMA23 = -2 * ARMA23 + 2*(2+3+2)
+AIC_ARMA43 = -2 * ARMA43 + 2*(4+3+2)
+AIC_AR1
+AIC_ARMA11
+AIC_ARMA12
+AIC_ARMA23
+AIC_ARMA43
+```
+
+Therefore, ARMA(2,3) is the best model, which has the lowest AIC 1274.
+
+## G1
+
+$w_{11}$ = 1 − 3$\rho(1)^2$ + 4$\rho(1)^4$
+
+$w_{ii}$ = 1 + 2$\rho(1)^2$ for i > 1 
+
+$\hat\rho(1)$ = 0.438
+
+$\hat\rho(2)$ = 0.145
+
+95% CI for $\rho(1)$: $|\hat\rho(1) - \rho(1)|\over \sqrt{1 − 3\rho(1)^2 + 4\rho(1)^4 \over 100}$ $< 1.96$
+
+$\theta =0.6$, $\rho(1)=$ $\theta \over1+\theta^2$ = $15 \over 34$
+
+$|\hat\rho(1) - {15\over34}|$ < 1.96 * $\sqrt{1 − 3({15\over34})^2 + 4({15\over34})^4 \over 100}$
+
+$\Rightarrow$ $0.294<\hat\rho(1)<0.589$
+
+95% CI for $\rho(2)$: ${|\hat\rho2) - \rho(2)|} \over \sqrt{1 + 2\rho(1)^2 \over 100}$ $< 1.96$
+
+$|\hat\rho(1) - 0|$ < 1.96 * $\sqrt{1 + 2({15 \over 34})^2 \over 100}$
+
+$\Rightarrow$ $-0.23<\hat\rho(2)<0.23$
+
+Since 0.294 < $\hat\rho(1)$ = 0.438 < 0.589, 0.23 < $\hat\rho(2)$ = 0.145 < 0.23,
+
+then we could get that the data are consistent with an MA(1) model with θ = 0.6
