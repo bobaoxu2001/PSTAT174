@@ -87,7 +87,7 @@ From the graph, we could see that (i) no trend between 1980 and 2000, but a posi
 
 d.
 ```{r}
-gold_diff <- diff(mydata,50)
+gold_diff <- diff(mydata,12)
 gold_ts <- ts(gold_diff,start = c(1979,1), end = c(2021,7))
 plot.ts(gold_ts,type="l")
 ```
