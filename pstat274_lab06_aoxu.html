@@ -357,11 +357,115 @@ display: none;
 </div>
 
 
-<ol style="list-style-type: decimal">
-<li></li>
-</ol>
-<div id="step-1-data-processing" class="section level3">
-<h3>Step 1 Data processing</h3>
+<div id="section" class="section level1">
+<h1>1.</h1>
+<div id="a-summarize-how-you-would-carry-out-the-following-steps-in-time-series-analysis.-you-can-describe-briefly-by-words-or-write-down-r-commands-you-would-use-to-implement-these-steps." class="section level4">
+<h4>(a) Summarize how you would carry out the following steps in time
+series analysis. You can describe briefly by words, or write down R
+commands you would use to implement these steps.</h4>
+<p>Assume we have a dataset abcd.</p>
+</div>
+<div id="step-1-data-processing" class="section level2">
+<h2>Step 1 Data processing</h2>
+<p>op &lt;- par(mfrow=c(1,2))</p>
+<p>acf(abcd)</p>
+<p>pacf(abcd)</p>
+<p>par(op)</p>
+<p>abcd.diff &lt;- diff(abcd,1)</p>
+<p>ts.plot(abcd.diff, main = “De-trended data”)</p>
+</div>
+<div id="step-2-model-identification" class="section level2">
+<h2>Step 2 Model identification</h2>
+<p>op &lt;- par(mfrow=c(1,2))</p>
+<p>acf(abcd.diff)</p>
+<p>pacf(abcd.diff)</p>
+<p>par(op)</p>
+</div>
+<div id="step-3-model-estimation" class="section level2">
+<h2>Step 3 Model estimation</h2>
+<p>(fit.ar &lt;- ar(abcd.diff, method=“yw”))</p>
+<p>95% CI for phi1</p>
+<p>ar1.se &lt;- sqrt(fit.ar$asy.var.coef)</p>
+<p>c(fit.ar<span class="math inline">\(ar - 1.96*ar1.se,
+fit.ar\)</span>ar + 1.96<em>1.96</em>ar1.se)</p>
+</div>
+<div id="step-4-model-selection" class="section level2">
+<h2>Step 4 Model selection</h2>
+<p>library(qpcR)</p>
+<p>Calculate AICc for ARMA models with p and q running from 0 to 5</p>
+<p>aiccs &lt;- matrix(NA, nr = 6, nc = 6)</p>
+<p>dimnames(aiccs) = list(p=0:5, q=0:5)</p>
+<p>for(p in 0:5)</p>
+<p>{</p>
+<p>for(q in 0:5)</p>
+<p>{</p>
+<p>aiccs[p+1,q+1] = AICc(arima(abcd.diff, order = c(p,0,q),
+method=“ML”))</p>
+<p>}</p>
+<p>}</p>
+<p>aiccs</p>
+<p>(aiccs==min(aiccs))</p>
+</div>
+<div id="step-5-model-diagnostics" class="section level2">
+<h2>Step 5 Model diagnostics</h2>
+<div id="pick-ar1-and-perform-residual-analysis" class="section level4">
+<h4>Pick AR(1) and perform residual analysis:</h4>
+<p>fit = arima(abcd, order=c(1,1,0), method=“ML”)</p>
+</div>
+<div id="test-for-independence-of-residuals" class="section level4">
+<h4>Test for independence of residuals</h4>
+<p>Box.test(residuals(fit), type=“Ljung”)</p>
+</div>
+<div id="test-for-normality-of-residuals" class="section level4">
+<h4>Test for normality of residuals</h4>
+<p>shapiro.test(residuals(fit))</p>
+<p>ts.plot(residuals(fit),main = “Fitted Residuals”)</p>
+<p>par(mfrow=c(1,2),oma=c(0,0,2,0))</p>
+</div>
+<div id="plot-diagnostics-of-residuals" class="section level4">
+<h4>Plot diagnostics of residuals</h4>
+<p>op &lt;- par(mfrow=c(2,2))</p>
+</div>
+<div id="acf" class="section level4">
+<h4>acf</h4>
+<p>acf(residuals(fit),main = “Autocorrelation”)</p>
+</div>
+<div id="pacf" class="section level4">
+<h4>pacf</h4>
+<p>pacf(residuals(fit),main = “Partial Autocorrelation”)</p>
+</div>
+<div id="histogram" class="section level4">
+<h4>Histogram</h4>
+<p>hist(residuals(fit),main = “Histogram”)</p>
+</div>
+<div id="q-q-plot" class="section level4">
+<h4>q-q plot</h4>
+<p>qqnorm(residuals(fit))</p>
+<p>qqline(residuals(fit),col =“blue”)</p>
+</div>
+<div id="add-overall-title" class="section level4">
+<h4>Add overall title</h4>
+<p>title(“Fitted Residuals Diagnostics”, outer=TRUE)</p>
+<p>par(op)</p>
+</div>
+</div>
+<div id="step-6-data-forecast" class="section level2">
+<h2>Step 6 Data forecast</h2>
+<div id="predict-10-future-observations-and-plot" class="section level4">
+<h4>Predict 10 future observations and plot</h4>
+<p>mypred &lt;- predict(fit, n.ahead=10)</p>
+<p>ts.plot(abcd, xlim=c(0,89))</p>
+<p>points(79:88,mypred$pred)</p>
+<p>lines(79:88,mypred<span class="math inline">\(pred+1.96*mypred\)</span>se,lty=2)</p>
+<p>lines(79:88,mypred<span class="math inline">\(pred-1.96*mypred\)</span>se,lty=2)</p>
+</div>
+<div id="b-review-this-weeks-lab-material-dow-jones-index-question-part-3-make-the-data-stationary.-is-dierencing-once-at-lag-1-sucient-to-make-the-data-stationary-if-yes-justify-it.-if-no-try-to-make-it-stationary.-please-write-related-r-codes." class="section level4">
+<h4>(b) Review this week’s lab material, Dow Jones Index question part
+3) (‘Make the data stationary’). Is dierencing once at lag 1 sucient to
+make the data stationary? If yes, justify it. If no, try to make it
+stationary. Please write related R Codes.</h4>
+</div>
+</div>
 </div>
 
 
