@@ -140,3 +140,24 @@ lines(79:88,mypred$pred-1.96*mypred$se,lty=2)
 
 #### (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is dierencing once at lag 1 sucient to make the data stationary? If yes, justify it. If no, try to make it stationary. Please write related R Codes.
 
+```{r}
+# Load data
+dowj_data <- scan("dowj.txt")
+```
+
+```{r}
+dowj <- ts(dowj_data)
+# Plot data
+ts.plot(dowj,main = "Dow Jones Index")
+```
+```{r}
+op <- par(mfrow=c(1,2))
+acf(dowj)
+pacf(dowj)
+```
+```{r}
+par(op)
+dowj.diff <- diff(dowj,1)
+ts.plot(dowj.diff, main = "De-trended data")
+```
+
