@@ -1,5 +1,5 @@
 ---
-title: "pstat274_lab05_aoxu"
+title: "pstat274_lab06_aoxu"
 author: "AO XU"
 date: "2022-11-04"
 output: html_document
@@ -137,6 +137,8 @@ points(79:88,mypred$pred)
 lines(79:88,mypred$pred+1.96*mypred$se,lty=2)
 
 lines(79:88,mypred$pred-1.96*mypred$se,lty=2)
+
+
 
 #### (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is dierencing once at lag 1 sucient to make the data stationary? If yes, justify it. If no, try to make it stationary. Please write related R Codes.
 
