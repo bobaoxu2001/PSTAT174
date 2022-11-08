@@ -360,9 +360,6 @@ display: none;
 <div id="problem-1" class="section level3">
 <h3>Problem 1</h3>
 <p>Solution:</p>
-<p>From slides 8 and 9 of Lecture 11, we get thatthe 95% confidence
-intervals for autocorrelation function of the fitted residuals is |<span class="math inline">\(\hat\rho (h)\)</span>| &lt; <span class="math inline">\(1.96\over \sqrt{n}\)</span> for all h &gt; 1.</p>
-<p>Then</p>
 <p><span class="math inline">\(\rho_w(1)=-0.04 \pm1.96*0.08 =
 (-0.1968,0.1168)\)</span></p>
 <p><span class="math inline">\(\rho_w(2)=-0.5 \pm1.96*0.1 =
@@ -422,12 +419,26 @@ confidence interval (-0.422,0.964), we could get that null hypothesis
 \neq 0\)</span>, so we get that <span class="math inline">\(\{ X_t - \mu
 \}\)</span> is not a white noise.</p>
 <ol start="2" style="list-style-type: lower-alpha">
-<li>AR(2) model, which means the PACF would be <span class="math inline">\(\alpha(1)=\hat{p}(1)=0.427\)</span>,</li>
+<li>AR(2)</li>
 </ol>
-<p><span class="math inline">\({\hat{\rho}(0)}\hat{\rho}(1)\phi_1\over{\hat{\rho}(1)\hat{\rho}(0)}\rho(2)\)</span>
-= <span class="math inline">\(\hat{\rho}(1)\over\hat{\rho}(2)\)</span>
-<span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(\alpha(2)=\hat{\rho}(2)=0.358\)</span> and also
-<span class="math inline">\(\rho(h)=0,h \geq 3\)</span></p>
+<p><span class="math inline">\(\hat\mu = \bar{x} = 3.82\)</span></p>
+<p>Since <span class="math inline">\(\rho(1)=
+\phi(1)+\phi(2)\rho(1)\)</span> and <span class="math inline">\(\rho(2)
+= \phi(1)\rho(1)+\phi(2)\)</span>，</p>
+<p>we could get that <span class="math inline">\(\phi(1) = {\rho(1)
+-\rho(1) \rho(2) \over 1-\rho(1)^2}\)</span> = 0.274 and <span class="math inline">\(\phi(2) = \rho(2) - {\rho(1)^2 -\rho(1)^2 \rho(2)
+\over 1-\rho(1)^2}\)</span> = 0.358</p>
+<p><span class="math inline">\(\gamma(0) = \phi_1\gamma(1) + \phi_2
+\gamma(2) + \sigma_Z^2\)</span></p>
+<p><span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(\sigma_z^2 =
+\gamma(0)(1-\phi_1\rho(1)-\phi_2\rho(2)) = 0.82\)</span></p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>AR(2) model</li>
+</ol>
+<p><span class="math inline">\(\alpha(2) = \phi_2 =0.358\)</span></p>
+<p><span class="math inline">\(\alpha(1) = {\phi_1
+\over1-\phi_2}=0.427\)</span></p>
+<p><span class="math inline">\(\alpha(k) = 0\)</span> for <span class="math inline">\(k \neq 1,2\)</span></p>
 </div>
 
 

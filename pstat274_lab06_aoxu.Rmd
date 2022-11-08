@@ -143,6 +143,7 @@ lines(79:88,mypred$pred-1.96*mypred$se,lty=2)
 #### (b) Review this week’s lab material, Dow Jones Index question part 3) (‘Make the data stationary’). Is dierencing once at lag 1 sucient to make the data stationary? If yes, justify it. If no, try to make it stationary. Please write related R Codes.
 
 ```{r}
+library(MASS)
 # Load data
 dowj_data <- scan("dowj.txt")
 ```
@@ -151,15 +152,43 @@ dowj_data <- scan("dowj.txt")
 dowj <- ts(dowj_data)
 # Plot data
 ts.plot(dowj,main = "Dow Jones Index")
+t = 1:length(dowj)
+bcTranform = boxcox(dowj~t, plotit=FALSE)
+lambda = bcTranform$x[which(bcTranform$y==max(bcTranform$y))] 
+dowj.bc = (1/lambda)*(dowj^lambda-1) 
+ts.plot(dowj.bc,main="Box-Cox Transform")
 ```
 ```{r}
 op <- par(mfrow=c(1,2))
 acf(dowj)
+acf(dowj.bc)
 pacf(dowj)
+pacf(dowj.bc)
 ```
 ```{r}
 par(op)
 dowj.diff <- diff(dowj,1)
 ts.plot(dowj.diff, main = "De-trended data")
 ```
+```{r}
+op <- par(mfrow=c(1,2)) 
+acf(dowj.diff) 
+pacf(dowj.diff)
+```
+```{r}
+var(dowj.diff)
+```
 
+```{r}
+dowj.diffd <- diff(dowj.diff,1) 
+ts.plot(dowj.diffd, main = "De-trended data")
+```
+```{r}
+op <- par(mfrow=c(1,2)) 
+acf(dowj.diffd) 
+pacf(dowj.diffd)
+```
+```{r}
+var(dowj.diffd)
+```
+So differencing once at lag 1 is sufficient to make the data stationary.

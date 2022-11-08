@@ -9,11 +9,6 @@ output: html_document
 
 Solution:
 
-From slides 8 and 9 of Lecture 11, we get thatthe 95% confidence intervals for autocorrelation function of
-the fitted residuals is |$\hat\rho (h)$| < $1.96\over \sqrt{n}$ for all h > 1.
-
-Then 
-
 $\rho_w(1)=-0.04 \pm1.96*0.08 = (-0.1968,0.1168)$
 
 $\rho_w(2)=-0.5 \pm1.96*0.1 = (-0.696,-0.304)$
@@ -67,10 +62,22 @@ Since it doesn't contain 0 and $\rho(1) \neq 0$, so we get that $\{ X_t - \mu \}
 
 $\hat\mu = \bar{x} = 3.82$
 
-${\hat{\rho}(0)}\hat{\rho}(1)\phi_1\over{\hat{\rho}(1)\hat{\rho}(0)}\rho(2)$
+Since $\rho(1)= \phi(1)+\phi(2)\rho(1)$ and $\rho(2) = \phi(1)\rho(1)+\phi(2)$，
+
+we could get that $\phi(1) = {\rho(1) -\rho(1) \rho(2) \over 1-\rho(1)^2}$ = 0.274
+and $\phi(2) = \rho(2) - {\rho(1)^2 -\rho(1)^2 \rho(2) \over 1-\rho(1)^2}$ = 0.358
+
+$\gamma(0) = \phi_1\gamma(1) + \phi_2 \gamma(2) + \sigma_Z^2$
+
+$\Longrightarrow$ $\sigma_z^2 = \gamma(0)(1-\phi_1\rho(1)-\phi_2\rho(2)) = 0.82$
+
+(c) AR(2) model
+
+$\alpha(2) = \phi_2 =0.358$
+
+$\alpha(1) = {\phi_1 \over1-\phi_2}=0.427$
+
+$\alpha(k) = 0$ for $k \neq 1,2$
 
 
-(c) AR(2) model, which means the PACF would be $\alpha(1)=\hat{p}(1)=0.427$,
-
-${\hat{\rho}(0)}\hat{\rho}(1)\phi_1\over{\hat{\rho}(1)\hat{\rho}(0)}\rho(2)$ = $\hat{\rho}(1)\over\hat{\rho}(2)$ $\Longrightarrow$ $\alpha(2)=\hat{\rho}(2)=0.358$ and also $\rho(h)=0,h \geq 3$
 
