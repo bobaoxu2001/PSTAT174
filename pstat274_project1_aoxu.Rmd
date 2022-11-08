@@ -62,6 +62,7 @@ Govt_20_Yield$yield_percentage <- round(Govt_20_Yield$lt_govt_yield_20_year*100,
 ```
 
 ```{r}
+plot(Govt_20_Yield$yield_percentage)
 summary(Govt_20_Yield$yield_percentage)
 ```
 

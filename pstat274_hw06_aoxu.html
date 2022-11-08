@@ -389,6 +389,45 @@ intervals for autocorrelation function of the fitted residuals is |<span class="
 </div>
 <div id="problem-2" class="section level3">
 <h3>Problem 2</h3>
+<p><span class="math inline">\(H_0: \mu=0\)</span> vs <span class="math inline">\(H_1: \mu \neq 0\)</span></p>
+<p><span class="math inline">\(\bar{X}\)</span>~<span class="math inline">\(N(\mu,{\sigma_x^2 \over100})\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\({\bar{X}-\mu}\over
+\sqrt{var(\bar{X})\over100}\)</span>~<span class="math inline">\(N(0,1)\)</span></p>
+<p><span class="math inline">\(P(-1.96 \leq {\bar{X}-\mu \over
+\sqrt{var(\bar{X})\over100}}\leq1.96) = 0.95\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(-1.96\sqrt{var(\bar{X})\over100} \leq
+{0.271-\mu}\leq1.96\sqrt{var(\bar{X})\over100}\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(0.271-1.96\sqrt{var(\bar{X})\over100} \leq
+{\mu}\leq 0.271+1.96\sqrt{var(\bar{X})\over100}\)</span></p>
+<p>Since it’s AR(1) model. we could get that <span class="math inline">\(var(\bar{x}) \approx \gamma_x(0)+2
+\sum\limits_{n=1}^{\infty} \gamma_x(h)=\gamma_x(0)+2
+\sum\limits_{n=1}^{\infty} \phi^h\gamma_x(0)\)</span>=<span class="math inline">\(\gamma_x(0)(1+2 \sum\limits_{n=1}^{\infty}
+\phi*\phi^{n-1})\)</span> = <span class="math inline">\(\sigma^2 \over
+1-\phi^2\)</span> <span class="math inline">\((1+2 {\phi\over 1-
+\phi})\)</span> = <span class="math inline">\(2 \over 1
+-0.6^2\)</span><span class="math inline">\((1+2*{0.6\over1-0.6})\)</span>=12.5</p>
+<p>Therefore, we could get that <span class="math inline">\(0.271-1.96\sqrt{12.5\over100} \leq {\mu}\leq
+0.271+1.96\sqrt{12.5\over100}\)</span> <span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(-0.422 \leq \mu \leq0.964\)</span>.</p>
+<p>Since <span class="math inline">\(\mu=0\)</span> is in the 95%
+confidence interval (-0.422,0.964), we could get that null hypothesis
+<span class="math inline">\(\mu=0\)</span> cannot be rejected.</p>
+</div>
+<div id="g1" class="section level3">
+<h3>G1</h3>
+<p>Solution:</p>
+<ol style="list-style-type: lower-alpha">
+<li>By using ACF: <span class="math inline">\(\hat\rho\)</span> ~ <span class="math inline">\(N(\rho(h),h^{-1})\)</span>, <span class="math inline">\(\hat\rho(h) \pm {1.96 \over
+\sqrt{n}},n=200\)</span>.</li>
+</ol>
+<p><span class="math inline">\(\rho(1)=0.427 \pm {1.96 \over
+\sqrt{200}}=(0.2884,0.5655)\)</span></p>
+<p>Since it doesn’t contain 0 and <span class="math inline">\(\rho(1)
+\neq 0\)</span>, so we get that <span class="math inline">\(\{ X_t - \mu
+\}\)</span> is not a white noise.</p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>AR(2) model, which means the PACF would be <span class="math inline">\(\alpha(1)=\hat{p}(1)=0.427\)</span>,</li>
+</ol>
+<p><span class="math inline">\({\hat{\rho}(0)}\hat{\rho}(1)\phi_1\over{\hat{\rho}(1)\hat{\rho}(0)}\rho(2)\)</span>
+= <span class="math inline">\(\hat{\rho}(1)\over\hat{\rho}(2)\)</span>
+<span class="math inline">\(\Longrightarrow\)</span> <span class="math inline">\(\alpha(2)=\hat{\rho}(2)=0.358\)</span> and also
+<span class="math inline">\(\rho(h)=0,h \geq 3\)</span></p>
 </div>
 
 
