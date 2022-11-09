@@ -1,0 +1,57 @@
+---
+title: "pstat274_lab07_aoxu"
+author: "AO XU"
+date: "2022-11-09"
+output: html_document
+---
+
+```{r}
+library(tsdl)
+milk <- subset(tsdl, 12, "Agriculture")[[3]]
+train <- milk[1:150]
+test <- milk[151:156]
+ts.plot(train, ylab = "Monthly milk production")
+```
+To make it more stationary, we need to remove trend and seasonality:
+
+```{r}
+dmilk <- diff(train, 12)
+ddmilk <- diff(dmilk, 1)
+dmilk
+ddmilk
+```
+
+```{r}
+library(astsa)
+fit.i <- sarima(xdata=train, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
+```
+```{r}
+# Residual plots:
+res <- residuals(fit.i)
+res
+```
+
+(a)
+
+There is no residual since res is null.
+
+From the ACF of residuals plot, we could get that residuals lie within the 95% CI, so it could be assumed as zero. 
+
+From QQ plot, we could get that all points lie on a line, meaning residuals are normally distributed. 
+
+Nearly all p-values are greater than 5%, so we fail to reject the hypothesis.
+
+Therefore, the residuals are white noise.
+
+(b)
+
+```{r}
+# Predict 6 future observations and plot
+par(mfrow=c(1, 1))
+mypred <- sarima.for(train, n.ahead = 6, p=0, d=1, q=0, P=1, D=1, Q=1, S=12)
+#ts.plot(c(milk), xlim=c(1, length(milk) + 6), ylim=c(min(milk)*0.8, max(milk)*1.2))
+#points((length(milk) + 1):(length(milk) + 6), col="red",(lambda*mypred$pred + 1)^(1/lambda))
+#lines((length(wine) + 1):(length(wine) + 6),(lambda*mypred$pred + 1.96*mypred$se + 1)^(1/lambda), lty=2)
+points(151:156, test, col="blue")
+```
+
