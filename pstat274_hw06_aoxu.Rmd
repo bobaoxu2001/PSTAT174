@@ -52,7 +52,7 @@ Since $\mu=0$ is in the 95% confidence interval (-0.422,0.964), we could get tha
 
 Solution:
 
-(a) By using ACF: $\hat\rho$ ~ $N(\rho(h),h^{-1})$, $\hat\rho(h) \pm {1.96 \over \sqrt{n}},n=200$.
+(a) By using ACF: $\hat\rho$ ~ $N(\rho(h),h^{-1})$, $\hat\rho(h) \pm {1.96 * std},n=200$.
 
 $\rho(1)=0.427 \pm {1.96 \over \sqrt{200}}=(0.2884,0.5655)$
 
