@@ -20,8 +20,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # SBBI Raw Data for Capital Markets (2022_10_21)
 ```{r}
-install.packages("qpcR")
-install.packages("rgl")
+#install.packages("qpcR")
+#install.packages("rgl")
 ```
 
 ```{r,echo=FALSE, result = 'hide',fig.show='hide',message=FALSE}
@@ -69,8 +69,8 @@ summary(Govt_20_Yield$yield_percentage)
 ```{r}
 train <- Govt_20_Yield$yield_percentage[889:1140]
 test <- Govt_20_Yield$yield_percentage[1141:1152]
-train
-test
+#train
+#test
 ```
 
 ```{r}
