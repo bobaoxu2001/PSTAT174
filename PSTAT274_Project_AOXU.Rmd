@@ -1,0 +1,62 @@
+---
+title: "PSTAT274_PROJECT_AO XU"
+author: "AO XU"
+date: "2022-11-18"
+output: html_document
+---
+```{r,echo=FALSE, result = 'hide',fig.show='hide',message=FALSE}
+library(tsdl) 
+library(forecast) 
+library(tidyverse) 
+library(astsa)
+library(MASS) 
+library(ggplot2) 
+library(readxl)
+library(ggfortify) 
+library(forecast) 
+library(GeneCycle) 
+library(qpcR) 
+require(TSA) 
+#source("plot.roots.R")
+```
+```{r}
+length(tsdl[[107]])
+attr(tsdl[[107]],"subject")
+attr(tsdl[[107]],"source")
+attr(tsdl[[107]],"description")
+```
+
+```{r}
+co2 <- tsdl[[107]]
+plot.ts(co2)
+str(co2)
+```
+```{r}
+# Set up training and testing group
+c_train <- ts(co2[1:372],start = c(1960,1),frequency = 12)
+c_test <-ts(co2[373:384],start = c(1990,1),frequency = 12)
+# Periodogram of c_train
+periodogram(c_train)
+abline(h = 0)
+# Show histogram and acf plot of c_train
+par(mfrow=c(1,2))
+hist(c_train, col = "light blue",main = "")
+acf(c_train, lag.max = 40, main = "")
+# Perform box-cox transformation on c_train
+bcTransform <- boxcox(c_train~as.numeric(1:length(c_train))) lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] c_train.bc = (1/lambda)*(c_trainˆlambda-1)
+# Compare c_train and c_train.bc
+par(mfrow=c(2,3))
+plot.ts(c_train,xlab = "", main = "")
+hist(c_train, col = "light blue", xlab = "", main = "") qqnorm(c_train, main = "", xlab = "")
+qqline(c_train, col = "red")
+plot.ts(c_train.bc,xlab = "", main = "")
+hist(c_train.bc, col = "light blue", xlab = "", main = "") qqnorm(c_train.bc, main = "", xlab = "")
+qqline(c_train.bc, col = "red")
+# Decompose the trend and seasonality of c_train
+14
+y1 <- ts(as.ts(c_train),frequency = 12) decomp <- decompose(y1)
+plot(decomp)
+# Remove seasonality and trend
+c_train_12 <- diff(c_train, lag = 12) c_train_12_1 <- diff(c_train_12, lag = 1) c_train_12_1_1 <- diff(c_train_12_1, lag = 1)
+```
+
