@@ -140,7 +140,7 @@ q = 1; p = 1;
 ### Model Estimation
 ```{r}
 # Calculate the AICc of possible models
-a <- AICc(arima(milk.log, order = c(1,1,1), seasonal = list(order = c(3,1,4), period = 12), method = "CSS-ML"))
+a <- AICc(arima(milk.log, order = c(1,1,1), seasonal = list(order = c(3,1,4), period = 12), method = "CSS"))
 a
 ```
 
