@@ -20,43 +20,185 @@ require(TSA)
 #source("plot.roots.R")
 ```
 ```{r}
-length(tsdl[[107]])
-attr(tsdl[[107]],"subject")
-attr(tsdl[[107]],"source")
-attr(tsdl[[107]],"description")
+length(tsdl[[203]])
+attr(tsdl[[203]],"subject")
+attr(tsdl[[203]],"source")
+attr(tsdl[[203]],"description")
 ```
 
 ```{r}
-co2 <- tsdl[[107]]
-plot.ts(co2)
-str(co2)
+milk <- tsdl[[203]]
+plot.ts(milk)
+str(milk)
 ```
 ```{r}
 # Set up training and testing group
-c_train <- ts(co2[1:372],start = c(1960,1),frequency = 12)
-c_test <-ts(co2[373:384],start = c(1990,1),frequency = 12)
-# Periodogram of c_train
-periodogram(c_train)
-abline(h = 0)
+c_train <- ts(milk[1:156],start = c(1962,1),frequency = 12)
+c_test <-ts(milk[157:168],start = c(1975,12),frequency = 12)
+
 # Show histogram and acf plot of c_train
 par(mfrow=c(1,2))
 hist(c_train, col = "light blue",main = "")
 acf(c_train, lag.max = 40, main = "")
+```
+```{r}
 # Perform box-cox transformation on c_train
-bcTransform <- boxcox(c_train~as.numeric(1:length(c_train))) lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] c_train.bc = (1/lambda)*(c_trainˆlambda-1)
-# Compare c_train and c_train.bc
+bcTransform <- boxcox(c_train~as.numeric(1:length(c_train))) 
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+milk.bc = (1/lambda)*(c_train^lambda-1)
+lambda
+```
+$\lambda$ = 0 (log) is also in the confidence interval and very close to $\lambda$ = 0.02020202.
+So we choose log transform.
+
+```{r}
+# Perform log transformation on c_train
+milk.log <- log(c_train) 
+plot.ts(milk.log)
+```
+```{r}
+# Compare c_train and milk.bc
 par(mfrow=c(2,3))
 plot.ts(c_train,xlab = "", main = "")
-hist(c_train, col = "light blue", xlab = "", main = "") qqnorm(c_train, main = "", xlab = "")
+hist(c_train, col = "light blue", xlab = "", main = "")
+qqnorm(c_train, main = "", xlab = "")
 qqline(c_train, col = "red")
-plot.ts(c_train.bc,xlab = "", main = "")
-hist(c_train.bc, col = "light blue", xlab = "", main = "") qqnorm(c_train.bc, main = "", xlab = "")
-qqline(c_train.bc, col = "red")
-# Decompose the trend and seasonality of c_train
-14
-y1 <- ts(as.ts(c_train),frequency = 12) decomp <- decompose(y1)
-plot(decomp)
-# Remove seasonality and trend
-c_train_12 <- diff(c_train, lag = 12) c_train_12_1 <- diff(c_train_12, lag = 1) c_train_12_1_1 <- diff(c_train_12_1, lag = 1)
+plot.ts(milk.log,xlab = "", main = "")
+hist(milk.log, col = "light blue", xlab = "", main = "") 
+qqnorm(milk.log, main = "", xlab = "")
+qqline(milk.log, col = "red")
 ```
+```{r}
+y <- ts(as.ts(milk.log), frequency = 12)
+decomp <- decompose(y)
+plot(decomp)
+```
+
+### Remove seasonality and trend
+```{r}
+# ln(Ut) differenced at lag 12
+var(milk.log)
+milk.log_12 <- diff(milk.log, lag=12)
+var(milk.log_12)
+# ln(Ut) differenced at lag 12 and then lag 1
+milk.log_12_1 <- diff(milk.log_12, lag=1)
+var(milk.log_12_1)
+# ln(Ut) differenced at lag 12, then lag 1 and then lag 1
+milk.log_12_1_1 <- diff(milk.log_12_1, lag=1)
+var(milk.log_12_1_1)
+```
+Since 0.0001696229 is the smallest number, so we choose to difference ln(Ut) at lag 12 and then 1 to approach the smallest variance.
+
+```{r}
+# To check number differencing par(mfrow=c(1,2))
+plot.ts(milk, main = "")
+
+plot.ts(milk.log_12, main = "Ln(U_t) differenced at lag 12")
+abline(h=mean(milk.log_12), col = "blue")
+fit <- lm(milk.log_12 ~ as.numeric(1:length(milk.log_12))) 
+#abline(fit, col="red")
+
+plot.ts(milk.log_12_1, main = "Ln(U_t) differenced at lag 12, at lag 1")
+abline(h=mean(milk.log_12_1), col = "blue")
+fit2 <- lm(milk.log_12_1 ~ as.numeric(1:length(milk.log_12_1))) 
+#abline(fit2, col="red")
+```
+```{r}
+# Compare the ACF and PACF of milk.log, milk.log_12, and milk.log_12_1
+par(mfrow=c(2,3))
+acf(milk.log, lag.max = 40, main = expression(U[t]))
+acf(milk.log_12, lag.max = 40, main = expression(nabla[12]~~U[t])) 
+acf(milk.log_12_1, lag.max = 40, main =expression(nabla[1]~nabla[12]~~U[t]))
+pacf(milk.log, lag.max = 40, main = "")
+pacf(milk.log_12, lag.max = 40, main = "")
+pacf(milk.log_12_1, lag.max = 40, main = "")
+```
+```{r}
+# Compare the histgram of milk.log, milk.log_12, and milk.log_12_1
+hist(milk.log, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+hist(milk.log_12, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+hist(milk.log_12_1, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+```
+### Model Identification
+```{r}
+# Decide the proper p,d,q, P,D,Q from the acf and pacf plots
+acf(milk.log_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1") 
+pacf(milk.log_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1")
+```
+ACF outside confidence intervals: Lags 1, may be 12, 13, 48
+
+PACF outside confidence intervals: Lags 1, may be 12, 24, 35, 36
+
+Since I difference my log (U_t) at lag 12 once and lag 1 once, then d = 1; D = 1; 
+
+Here p probably to be 3
+
+Q = 4; P = 3; 
+
+q = 1; p = 1; 
+
+### Model Estimation
+```{r}
+# Calculate the AICc of possible models
+a <- AICc(arima(milk.log, order = c(1,1,1), seasonal = list(order = c(3,1,4), period = 12), method = "CSS-ML"))
+a
+```
+
+```{r}
+arima(milk.log, order=c(1,1,1), seasonal = list(order = c(3,1,4), period = 12), method="CSS")
+```
+Since ar1, ma1, sma1, sma2, sma3, sma4 include 0, then we choose NA.
+
+We get that $SARIMA(0,1,1)(0,1,4)_12$ has the lowest AICC Value which is -885.7119.
+
+Also, there is model $SARIMA(1,1,1)(0,1,4)_12$ has a second lowest AICC Value which is -885.6479.
+
+```{r}
+arima(milk.log, order=c(1,1,1), seasonal = list(order = c(3,1,4), period = 12), fixed = c(0,0,NA,NA,NA,0,0,0,0),method="CSS")
+```
+```{r}
+# Calculate the AICc of possible models
+b <- AICc(arima(milk.log, order = c(1,1,1), seasonal = list(order = c(3,1,4), period = 12),fixed = c(0,0,NA,NA,NA,0,0,0,0), method = "CSS-ML"))
+b
+```
+```{r}
+polyroot(c(1, -0.6175))
+```
+The root is outside unit circle, which indicates the model is invertible.
+Then we move on to examine the residual of Model.
+
+Then we choose model $\nabla[1]~\nabla[12] ln (Ut)=(1–0.6175 B^{12}--0.5121B^{24}-0.3573^{36})Zt$
+```{r}
+# Plot the residuals
+fit1 <- arima(milk.log, order = c(1,1,1),seasonal = list(order = c(3,1,4), period = 12), method = "CSS")
+res1 <- residuals(fit1)
+plot.ts(res1, xlab = "")
+abline(h=mean(res1),col = "blue")
+# Plot the histogram, Q-Q normal plot of the residual par(mfrow=c(1,2))
+hist(res1, density = 20, breaks = 20,
+col = "blue", xlab = "", prob = TRUE, main = "") 
+m1 <- mean(res1)
+std1 <- sqrt(var(res1)) 
+curve(dnorm(x,m1,std1),add = TRUE) 
+qqnorm(res1,main = "", xlab = "") 
+qqline(res1, col = "blue")
+# Plot the ACF and PACF of the residual
+par(mfrow=c(1,2)) 
+acf(res1,lag.max=60, main = "") 
+pacf(res1,lag.max=60, main = "")
+```
+```{r}
+# Perform test on Model 1's residual
+shapiro.test(res1)
+Box.test(res1,lag = 20, type = c("Box-Pierce"),fitdf = 2) Box.test(res1,lag = 20, type = c("Ljung-Box"),fitdf = 2) Box.test(res1ˆ2,lag = 20, type = c("Ljung-Box"),fitdf = 0) ar(res1,aic=TRUE,order.max=NULL, mehod = c("yule-walker")) # Perform test on Model 2's residual
+shapiro.test(res2)
+Box.test(res2,lag = 20, type = c("Box-Pierce"),fitdf = 3) Box.test(res2,lag = 20, type = c("Ljung-Box"),fitdf = 3) Box.test(res2ˆ2,lag = 20, type = c("Ljung-Box"),fitdf = 0) ar(res2,aic=TRUE,order.max=NULL, mehod = c("yule-walker")) # Compare the residual square of Model 1 and Model 2 par(mfrow=c(1,2))
+acf(res1ˆ2,lag.max=40)
+acf(res2ˆ2,lag.max=40)
+```
+
+
+
+
+
 
