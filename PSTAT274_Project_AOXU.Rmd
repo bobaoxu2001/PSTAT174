@@ -49,8 +49,9 @@ lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
 milk.bc = (1/lambda)*(c_train^lambda-1)
 lambda
 ```
-$\lambda$ = 0 (log) is also in the confidence interval and very close to $\lambda$ = 0.02020202.
-So we choose log transform.
+$\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose either log transforamtion or no transformation.
+
+We choose log transform for try.
 
 ```{r}
 # Perform log transformation on c_train
@@ -139,10 +140,7 @@ Q = 4; P = 3;
 q = 1; p = 1; 
 
 ### Model Estimation
-```{r}
-c <- AICc(arima(milk, order = c(1,1,0), seasonal = list(order = c(3,1,4), period = 12),method = "ML"))
-c
-```
+
 
 ```{r}
 # Calculate the AICc of possible models
@@ -179,6 +177,16 @@ The root is outside unit circle, which indicates the model is invertible.
 Then we move on to examine the residual of Model.
 
 Then we choose model $\nabla[1]~\nabla[12] ln (Ut)=(1–0.6175 B^{12}--0.5121B^{24}-0.3573^{36})Zt$
+
+```{r}
+#To check invertibility of MA part of model A:
+install.packages("UnitCircle")
+library(UnitCircle)
+par(mfrow=c(1,2))
+uc.check(pol_ = c(1,-0.6771,0,0,0.3054), plot_output = TRUE,print_output = F) # Seasonal MA Part 
+uc.check(pol_ = c(1,-0.1729), plot_output = TRUE,print_output = F) # Non-Seasonal MA Part
+```
+
 ```{r}
 # Plot the residuals
 fit1 <- arima(milk.log, order = c(0,1,1),seasonal = list(order = c(0,1,4), period = 12), method = "ML")
@@ -202,11 +210,24 @@ pacf(res1,lag.max=60, main = "")
 # Perform test on Model 1's residual
 # sqrt(156) is 12.49, so we can choose lag = 12
 shapiro.test(res1)
-Box.test(res1,lag = 12, type = c("Box-Pierce"),fitdf = 3) 
-Box.test(res1,lag = 12, type = c("Ljung-Box"),fitdf = 3) 
+Box.test(res1,lag = 12, type = c("Box-Pierce"),fitdf = 3) # 3 coefficients
+Box.test(res1,lag = 12, type = c("Ljung-Box"),fitdf = 3) # 3 coefficients
 Box.test(res1^2,lag = 12, type = c("Ljung-Box"),fitdf = 0) 
 ar(res1,aic=TRUE,order.max=NULL, method = c("yule-walker"))
 ```
+
+### Spetral Analysis
+```{r}
+require(TSA)
+# Graph the periodogram of Model 1 residual 
+periodogram(res1)
+abline(h = 0)
+# Perform Kolmogorov-Smirnov Test on Model 1 residual
+cpgram(res1, main = 'Kolmogorov-Smirnov Test') 
+# Perform fisher test on Model 1 residual
+fisher.g.test(res1)
+```
+
 ```{r}
 fit.1<-arima(c_train, order = c(0,1,1),
 seasonal = list(order = c(0,1,4), period = 12), method = "ML")
