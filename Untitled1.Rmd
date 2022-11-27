@@ -1,9 +1,14 @@
 ---
-title: "PSTAT274_PROJECT_AO XU"
+title: "bc"
 author: "AO XU"
-date: "2022-11-18"
+date: "2022-11-27"
 output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ```{r,echo=FALSE, result = 'hide',fig.show='hide',message=FALSE}
 library(tsdl) 
 library(forecast) 
@@ -49,14 +54,14 @@ lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
 milk.bc = (1/lambda)*(c_train^lambda-1)
 lambda
 ```
-$\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose either log transforamtion or no transformation.
+$\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose either bc, log transforamtion or no transformation.
 
-We choose log transform for try.
+We choose box-cox transform for try.
 
 ```{r}
-# Perform log transformation on c_train
-milk.log <- log(c_train) 
-plot.ts(milk.log)
+# Perform box-cox transformation on c_train
+milk.bc <- (1/lambda)*(c_train^lambda-1)
+plot.ts(milk.bc)
 ```
 ```{r}
 # Compare c_train and milk.bc
@@ -65,13 +70,13 @@ plot.ts(c_train,xlab = "", main = "")
 hist(c_train, col = "light blue", xlab = "", main = "")
 qqnorm(c_train, main = "", xlab = "")
 qqline(c_train, col = "red")
-plot.ts(milk.log,xlab = "", main = "")
-hist(milk.log, col = "light blue", xlab = "", main = "") 
-qqnorm(milk.log, main = "", xlab = "")
-qqline(milk.log, col = "red")
+plot.ts(milk.bc,xlab = "", main = "")
+hist(milk.bc, col = "light blue", xlab = "", main = "") 
+qqnorm(milk.bc, main = "", xlab = "")
+qqline(milk.bc, col = "red")
 ```
 ```{r}
-y <- ts(as.ts(milk.log), frequency = 12)
+y <- ts(as.ts(milk.bc), frequency = 12)
 decomp <- decompose(y)
 plot(decomp)
 ```
@@ -79,53 +84,53 @@ plot(decomp)
 ### Remove seasonality and trend
 ```{r}
 # ln(Ut) differenced at lag 12
-var(milk.log)
-milk.log_12 <- diff(milk.log, lag=12)
-var(milk.log_12)
+var(milk.bc)
+milk.bc_12 <- diff(milk.bc, lag=12)
+var(milk.bc_12)
 # ln(Ut) differenced at lag 12 and then lag 1
-milk.log_12_1 <- diff(milk.log_12, lag=1)
-var(milk.log_12_1)
+milk.bc_12_1 <- diff(milk.bc_12, lag=1)
+var(milk.bc_12_1)
 # ln(Ut) differenced at lag 12, then lag 1 and then lag 1
-milk.log_12_1_1 <- diff(milk.log_12_1, lag=1)
-var(milk.log_12_1_1)
+milk.bc_12_1_1 <- diff(milk.bc_12_1, lag=1)
+var(milk.bc_12_1_1)
 ```
-Since 0.0001696229 is the smallest number, so we choose to difference ln(Ut) at lag 12 and then 1 to approach the smallest variance.
+Since 0.005246183 is the smallest number, so we choose to difference ln(Ut) at lag 12 and then 1 to approach the smallest variance.
 
 ```{r}
 # To check number differencing par(mfrow=c(1,2))
 plot.ts(milk, main = "")
 
-plot.ts(milk.log_12, main = "Ln(U_t) differenced at lag 12")
-abline(h=mean(milk.log_12), col = "blue")
-fit <- lm(milk.log_12 ~ as.numeric(1:length(milk.log_12))) 
+plot.ts(milk.bc_12, main = "bc(U_t) differenced at lag 12")
+abline(h=mean(milk.bc_12), col = "blue")
+fit <- lm(milk.bc_12 ~ as.numeric(1:length(milk.bc_12))) 
 #abline(fit, col="red")
 
-plot.ts(milk.log_12_1, main = "Ln(U_t) differenced at lag 12, at lag 1")
-abline(h=mean(milk.log_12_1), col = "blue")
-fit2 <- lm(milk.log_12_1 ~ as.numeric(1:length(milk.log_12_1))) 
+plot.ts(milk.log_12_1, main = "bc(U_t) differenced at lag 12, at lag 1")
+abline(h=mean(milk.bc_12_1), col = "blue")
+fit2 <- lm(milk.bc_12_1 ~ as.numeric(1:length(milk.bc_12_1))) 
 #abline(fit2, col="red")
 ```
 ```{r}
 # Compare the ACF and PACF of milk.log, milk.log_12, and milk.log_12_1
 par(mfrow=c(2,3))
-acf(milk.log, lag.max = 40, main = expression(U[t]))
-acf(milk.log_12, lag.max = 40, main = expression(nabla[12]~~U[t])) 
-acf(milk.log_12_1, lag.max = 40, main =expression(nabla[1]~nabla[12]~~U[t]))
-pacf(milk.log, lag.max = 40, main = "")
-pacf(milk.log_12, lag.max = 40, main = "")
-pacf(milk.log_12_1, lag.max = 40, main = "")
+acf(milk.bc, lag.max = 40, main = expression(U[t]))
+acf(milk.bc_12, lag.max = 40, main = expression(nabla[12]~~U[t])) 
+acf(milk.bc_12_1, lag.max = 40, main =expression(nabla[1]~nabla[12]~~U[t]))
+pacf(milk.bc, lag.max = 40, main = "")
+pacf(milk.bc_12, lag.max = 40, main = "")
+pacf(milk.bc_12_1, lag.max = 40, main = "")
 ```
 ```{r}
 # Compare the histgram of milk.log, milk.log_12, and milk.log_12_1
-hist(milk.log, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
-hist(milk.log_12, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
-hist(milk.log_12_1, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+hist(milk.bc, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+hist(milk.bc_12, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
+hist(milk.bc_12_1, density=20,breaks=20, col="blue", xlab="", prob=TRUE)
 ```
 ### Model Identification
 ```{r}
 # Decide the proper p,d,q, P,D,Q from the acf and pacf plots
-acf(milk.log_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1") 
-pacf(milk.log_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1")
+acf(milk.bc_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1") 
+pacf(milk.bc_12_1, lag.max = 120, main="ACF of the log(U_t)_12_1")
 ```
 ACF outside confidence intervals: Lags 1, may be 12, 13, 48
 
@@ -144,13 +149,13 @@ q = 1; p = 1;
 
 ```{r}
 # Calculate the AICc of possible models
-# Error in optim(init[mask], armafn, method = optim.method, hessian = TRUE, non-finite finite-difference value [2]. It appears due to not enough data 
-a <- AICc(arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12),method = "ML"))
+a <- AICc(arima(milk.bc, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12),method = "ML"))
 a
 ```
 
+
 ```{r}
-arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12),method = "ML")
+arima(milk.bc, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12),method = "ML")
 ```
 Since sma2, sma3 include 0, then we choose NA.
 
@@ -159,20 +164,20 @@ We get that $SARIMA(0,1,1)(0,1,4)_12$ has the lowest AICC Value which is -885.71
 Also, there is model $SARIMA(1,1,1)(0,1,4)_12$ has a second lowest AICC Value which is -885.6479.
 
 ```{r}
-arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
+arima(milk.bc, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
 ```
 ```{r}
 # Calculate the AICc of possible models
-b <- AICc(arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML"))
-b
+c <- AICc(arima(milk.bc, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML"))
+c
 ```
 ```{r}
-arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
+arima(milk.bc, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
 ```
 So we esimate the model to be 
-$\nabla[1]~\nabla[12] ln (Ut) = (1–0.1729B) (1-0.6771B^{12}+0.3054B^{48}) Zt$
+$\nabla[1]~\nabla[12] bc (Ut) = (1–0.1908B) (1-0.7076B^{12}+0.2888B^{48}) Zt$
 ```{r}
-polyroot(c(1, -0.1729))
+polyroot(c(1, -0.1908))
 ```
 The root is outside unit circle, which indicates the model is invertible.
 Then we move on to examine the residual of Model.
@@ -184,13 +189,13 @@ Then we choose model $\nabla[1]~\nabla[12] ln (Ut)=(1–0.6175 B^{12}--0.5121B^{
 install.packages("UnitCircle")
 library(UnitCircle)
 par(mfrow=c(1,2))
-uc.check(pol_ = c(1,-0.6771,0,0,0.3054), plot_output = TRUE,print_output = F) # Seasonal MA Part 
-uc.check(pol_ = c(1,-0.1729), plot_output = TRUE,print_output = F) # Non-Seasonal MA Part
+uc.check(pol_ = c(1,-0.7076,0,0,0.2888), plot_output = TRUE,print_output = F) # Seasonal MA Part 
+uc.check(pol_ = c(1,-0.1908), plot_output = TRUE,print_output = F) # Non-Seasonal MA Part
 ```
 
 ```{r}
 # Plot the residuals
-fit1 <- arima(milk.log, order = c(0,1,1),seasonal = list(order = c(0,1,4), period = 12), method = "ML")
+fit1 <- arima(milk.bc, order = c(0,1,1),seasonal = list(order = c(0,1,4), period = 12), method = "ML")
 res1 <- residuals(fit1)
 plot.ts(res1, xlab = "")
 abline(h=mean(res1),col = "blue")
@@ -261,6 +266,7 @@ points(c_test,col = "slategrey", pch = 20)
 legend("bottomright", c("Prediction","95% C.I.","c_test"),
 fill = c("red", "blue","slategrey"), cex = 1.25)
 ```
+
 
 
 
