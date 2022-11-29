@@ -16,9 +16,10 @@ library(ggfortify)
 library(forecast) 
 library(GeneCycle) 
 library(qpcR) 
-require(TSA) 
+# require(TSA) 
 #source("plot.roots.R")
 ```
+
 ```{r}
 length(tsdl[[203]])
 attr(tsdl[[203]],"subject")
@@ -49,7 +50,7 @@ lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
 milk.bc = (1/lambda)*(c_train^lambda-1)
 lambda
 ```
-$\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose either log transforamtion or no transformation.
+$\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose neither log transforamtion or box-cox transformation.
 
 We choose log transform for try.
 
