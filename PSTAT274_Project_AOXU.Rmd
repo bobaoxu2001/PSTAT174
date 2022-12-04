@@ -170,6 +170,10 @@ b
 ```{r}
 arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
 ```
+```{r}
+AICc(arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML"))
+```
+
 So we esimate the model to be 
 $\nabla[1]~\nabla[12] ln (Ut) = (1–0.1729B) (1-0.6771B^{12}+0.3054B^{48}) Zt$
 ```{r}
@@ -208,6 +212,9 @@ par(mfrow=c(1,2))
 acf(res1,lag.max=60, main = "") 
 pacf(res1,lag.max=60, main = "")
 ```
+Non-gaussian distribution, but the box-cox jenkins is already the best one.
+It is is already the best way for non-gaussian distribution
+It cannot pass the Shapiro_Wilk normality test due to the influence of right tail. 
 ```{r}
 # Perform test on Model 1's residual
 # sqrt(156) is 12.49, so we can choose lag = 12
@@ -234,7 +241,7 @@ fisher.g.test(res1)
 fit.1<-arima(c_train, order = c(0,1,1),
 seasonal = list(order = c(0,1,4), period = 12), method = "ML")
 # Create confidence interval
-pred.tr <- predict(fit.1, n.ahead = 12)
+pred.tr <- predict(fit.1, n.ahead = 13)
 U = pred.tr$pred + 2*pred.tr$se
 L = pred.tr$pred - 2*pred.tr$se
 # Forecast on original data
@@ -261,6 +268,9 @@ points(pred.tr$pred,col = "red", pch = 1)
 points(c_test,col = "slategrey", pch = 20) 
 legend("bottomright", c("Prediction","95% C.I.","c_test"),
 fill = c("red", "blue","slategrey"), cex = 1.25)
+```
+```{r}
+pred.tr
 ```
 
 
