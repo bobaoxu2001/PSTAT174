@@ -1,22 +1,43 @@
 ---
 title: "PSTAT274_PROJECT_AO XU"
 author: "AO XU"
-date: "2022-11-18"
-output: html_document
+date: "2022-12-4"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: 4
 ---
-```{r,echo=FALSE, result = 'hide',fig.show='hide',message=FALSE}
-library(tsdl) 
-library(forecast) 
-library(tidyverse) 
-library(astsa)
-library(MASS) 
-library(ggplot2) 
-library(readxl)
-library(ggfortify) 
-library(forecast) 
-library(GeneCycle) 
-library(qpcR) 
-# require(TSA) 
+
+---
+title: \vspace{8.5cm} **"Time Series Analysis of Monthly Milk Production from Jan. 1962 to Dec. 1975"**
+author: "Ao Xu"
+date: "4 Dec 2022"
+output: 
+  pdf_document: null
+geometry: margin=1.0in
+font-size: 12pt
+---
+
+# 1.Introduction
+
+The dataset contains 168 measurements of monthly milk production (pounds per cow), collecting from Jan.1962 to Dec.1975. It is a classic time series dataset with sufficient number of observations to perform analysis and establish prediction model. To evaluate the accuracy of the prediction model, the original dataset is separated into a training set and a test set. The training set (denote: c_train) contains 156 values, which are monthly measurements from Jan. 1962 to Dec.1974. The testing set (denote: c_test) contains 12 values, which are the monthly measurements from Jan.1974 to Dec.1975. With Box-Jenkins methodology, we first select multiple models to estimate their coefficients. Then, we perform diagnostic testing to compare the models to find the most appropriate one for forecasting. Finally, we compare the forecast values to testing set data to check the accuracy of our final model.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+library(tsdl)
+library(forecast)
+library(tidyverse)
+library(MASS)
+library(ggplot2)
+library(ggfortify)
+library(forecast)
+library(GeneCycle)
+library(qpcR)
+require(TSA)
 #source("plot.roots.R")
 ```
 
