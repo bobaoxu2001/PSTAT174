@@ -1,14 +1,4 @@
 ---
-title: "PSTAT274_PROJECT_AO XU"
-author: "AO XU"
-date: "2022-12-4"
-output:
-  pdf_document:
-    toc: yes
-    toc_depth: 4
----
-
----
 title: \vspace{8.5cm} **"Time Series Analysis of Monthly Milk Production from Jan. 1962 to Dec. 1975"**
 author: "Ao Xu"
 date: "4 Dec 2022"
@@ -18,14 +8,9 @@ geometry: margin=1.0in
 font-size: 12pt
 ---
 
-# 1.Introduction
-
-The dataset contains 168 measurements of monthly milk production (pounds per cow), collecting from Jan.1962 to Dec.1975. It is a classic time series dataset with sufficient number of observations to perform analysis and establish prediction model. To evaluate the accuracy of the prediction model, the original dataset is separated into a training set and a test set. The training set (denote: c_train) contains 156 values, which are monthly measurements from Jan. 1962 to Dec.1974. The testing set (denote: c_test) contains 12 values, which are the monthly measurements from Jan.1974 to Dec.1975. With Box-Jenkins methodology, we first select multiple models to estimate their coefficients. Then, we perform diagnostic testing to compare the models to find the most appropriate one for forecasting. Finally, we compare the forecast values to testing set data to check the accuracy of our final model.
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 ```{r, include=FALSE}
 library(tsdl)
@@ -38,15 +23,72 @@ library(forecast)
 library(GeneCycle)
 library(qpcR)
 require(TSA)
-#source("plot.roots.R")
 ```
 
-```{r}
+\newpage
+\raggedright
+
+```{r, include=FALSE}
 length(tsdl[[203]])
 attr(tsdl[[203]],"subject")
 attr(tsdl[[203]],"source")
 attr(tsdl[[203]],"description")
 ```
+
+# **ABSTRACT**
+This paper performs a time series analysis on the concentration of milk production (pounds per cow), based on monthly measurements collected between year 1962 and 1974. The data are recorded by Cryer in 1986 and collected in the R tsdl data library. The reference number is 203. The original dataset has 168 observations. We divided the original dataset into two sets. The training set contains the first 156 observations, while the testing set contains the remaining 12 measurements. The Box-Jenkins methodology is applied to establish an appropriate model from the training set to forecast future values to compare with the testing set values. The final model we selected is $SARIMA(0,1,1)(0,1,4)_{12}$. Under this model, all forecast values lie within the 95% confidence interval.
+
+# **1.0 INTRODUCTION**
+
+The dataset contains 168 measurements of monthly milk production (pounds per cow), collecting from Jan.1962 to Dec.1975. It is a classic time series dataset with sufficient number of observations to perform analysis and establish prediction model. To evaluate the accuracy of the prediction model, the original dataset is separated into a training set and a test set. The training set (denote: c_train) contains 156 values, which are monthly measurements from Jan. 1962 to Dec.1974. The testing set (denote: c_test) contains 12 values, which are the monthly measurements from Jan.1975 to Dec.1975. With Box-Jenkins methodology, we first select multiple models to estimate their coefficients. Then, we perform diagnostic testing to compare the models to find the most appropriate one for forecasting. Finally, we compare the forecast values to testing set data to check the accuracy of our final model.
+
+##  *1.1 Data Processing*
+The plot of the original data shows repetitive patterns and an increasing trend, which indicate seasonality and non-constant mean. However, it seems the data has stable variance. 
+```{r, include=FALSE}
+milk <- ts(milk[1:168],start = c(1962,1),frequency = 12)
+```
+
+```{r , echo=FALSE, fig.cap="Monthly Measurements of Milk Prodcution Jan 1962 – Dec 1974."}
+plot.ts(milk,xlab = "",main = "")
+```
+
+
+```{r, include=FALSE}
+c_train <- ts(milk[1:156],start = c(1962,1),frequency = 12)
+c_test <-ts(co2[157:168],start = c(1975,1),frequency = 12)
+```
+
+\newpage
+
+To further analyze the non-stationality of the original dataset, we plot its histogram and ACF. The histogram is not symmetric and skewed to the right. The ACF decays slowly and also indicates a seasonality of 12 (show as lag 1 in the graph because the x_axis is based on year).
+
+```{r , echo=FALSE, fig.width=8,fig.height=4,fig.cap="Histogram and ACF plot of c_train"}
+par(mfrow=c(1,2))
+hist(c_train, col = "light blue",main = "", xlab ="")
+acf(c_train, lag.max = 40, main = "", xlab ="")
+```
+
+Since the histogram fails to show a symmetric, normal pattern, we perform a box-cox transformation and denote the transformed data as milk.log after log transformation.
+
+```{r, include=FALSE}
+# Perform box-cox transformation on c_train
+bcTransform <- boxcox(c_train~as.numeric(1:length(c_train))) 
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))] 
+milk.bc = (1/lambda)*(c_train^lambda-1)
+lambda
+```
+
+The box-cox plot gives us a result of $\lambda = 0.2626263$. The confidence interval of box-cox transformation includes 0 and 1. So I tried box-cox transformation, log transformation, non-transformation. After doing whole process and compare the results for each transformation, I found log transformation was the most suitable way for this data.
+
+```{r}
+# Perform log transformation on c_train
+milk.log <- log(c_train) 
+plot.ts(milk.log)
+```
+
+
+
+
 
 ```{r}
 milk <- tsdl[[203]]
@@ -74,6 +116,241 @@ lambda
 $\lambda$ = 0 (log) and 1 are in the confidence interval, so we can choose neither log transforamtion or box-cox transformation.
 
 We choose log transform for try.
+
+\newpage
+```{r , echo=FALSE, fig.width=8,fig.height=4,fig.cap="Comparison on c_train and milk.log: *Top Left*: Time Series Plot on c_train; *Top Middle*: Histogram of c_train; *Top Right*: Normal Q-Q Plot of c_train; *Bottom Left*: Histogram of milk.log; *Bottom Middle*: Histogram of milk.log; *Bottom Right*: Normal Q-Q Plot of milk.log"}
+par(mfrow=c(2,3))
+plot.ts(c_train,xlab = "", main = "")
+hist(c_train, col = "light blue", xlab = "", main = "")
+qqnorm(c_train, main = "", xlab = "")
+qqline(c_train, col = "red")
+
+plot.ts(milk.log,xlab = "", main = "")
+hist(milk.log, col = "light blue", xlab = "", main = "")
+qqnorm(milk.log, main = "", xlab = "")
+qqline(milk.log, col = "red")
+```
+
+
+By comparing the time series plot, histogram and normal Q-Q plots of c_train and milk.log, we can further confirm that the transformation is appropriate for our data. Therefore, we will perform log transformation and continue to work with milk.log.
+
+Our next step is to decompose the trend and seasonality of milk.log. Based on the decomposition plot, we estimates that difference at $\nabla_{12}$ and $\nabla_{1}$ will make our dataset stationary. 
+
+```{r , echo=FALSE, fig.cap="c_train: Decomposition of additive time series"}
+x1 <- ts(as.ts(milk.log),frequency = 12)
+decomp <- decompose(x1)
+plot(decomp, xlab = "")
+```
+
+After we difference milk.log at $\nabla_{12}$, there are no repetitive patterns shown in the graph. However, a positive trend is still obvious. Therefore, we difference again at $\nabla_{1}$. Compared with the original, $\nabla_{1}$$\nabla_{12}$milk.log looks stationary. Also, the mean of the graph is approximately zero. 
+
+\newpage
+```{r, include=FALSE}
+# ln(Ut) differenced at lag 12
+var(milk.log)
+milk.log_12 <- diff(milk.log, lag=12)
+var(milk.log_12)
+# ln(Ut) differenced at lag 12 and then lag 1
+milk.log_12_1 <- diff(milk.log_12, lag=1)
+var(milk.log_12_1)
+# ln(Ut) differenced at lag 12, then lag 1 and then lag 1
+milk.log_12_1_1 <- diff(milk.log_12_1, lag=1)
+var(milk.log_12_1_1)
+```
+
+```{r , echo=FALSE, fig.cap="*Left*: Time Series Plot of $\\nabla12$$U_t$; *Right*: Time Series Plot of $\\nabla1$$\\nabla12$$U_t$"}
+par(mfrow=c(1,2))
+plot.ts(milk.log_12, main = "", xlab = "")
+abline(h=mean(milk.log_12), col = "blue")
+
+
+plot.ts(milk.log_12_1, main = "", xlab = "")
+abline(h=mean(milk.log_12_1), col = "blue")
+```
+
+We continue to difference at lag 1 to compare the variance of milk.log, $\nabla_{1}$$\nabla_{12}$milk.log, and $\nabla_{1}$$\nabla_{1}$$\nabla_{12}$milk.log to finalize our decision on the number of differences.
+
+```{r, echo=FALSE}
+v <- cbind(var(milk.log), var(milk.log_12), var(milk.log_12_1), var(milk.log_12_1_1))
+rownames(v) <- "Variance"
+colnames(v) <- c("$U_t$","$\\nabla_{12}$$U_t$",
+                 "$\\nabla_{1}$$\\nabla_{12}$$U_t$","$\\nabla_{1}$$\\nabla_{1}$$\\nabla_{12}$$U_t$")
+knitr::kable(v)
+```
+
+By comparing the variances above, we get the smallest variance is 0.0001696	when differenciating it at lag 12 and lag 1. However, it goes up to 0.0004243 with an additional difference at lag 1. Therefore, we should stop difference and continue to work with $\nabla_{1}$$\nabla_{12}$milk.log.
+
+```{r, echo=FALSE, fig.cap="*Top Left*: ACF of $ln(U_t)$; *Top Middle*: ACF of $\\nabla12$$ln(U_t)$; *Top Right*: ACF of $\\nabla1$$\\nabla12$$ln(U_t)$; *Bottom Left*: PACF of $ln(U_t)$; *Bottom Middle*: PACF of $\\nabla12$$ln(U_t)$; *Bottom Right*: PACF of $\\nabla1$$\\nabla12$$ln(U_t)$"}
+par(mfrow=c(2,3))
+acf(milk.log, lag.max = 60, main = expression(ln(U[t])))
+acf(milk.log_12, lag.max = 60, main = expression(nabla[12]~~ln(U[t])))
+acf(milk.log_12_1, lag.max = 60, main = expression(nabla[1]~nabla[12]~~ln(U[t])))
+
+
+pacf(milk.log, lag.max = 60, main = "")
+pacf(milk.log_12, lag.max = 60, main = "")
+pacf(milk.log_12_1, lag.max = 60, main = "")
+```
+
+The above graphs compare the ACF and PACF of milk.log, $\nabla_{12}$milk.log, and $\nabla_{1}$$\nabla_{12}$milk.log. After being differenced at lag 12, $\nabla_{12}$milk.log does not show spikes at multiples of lag 12. However, it still presents a decaying pattern, which indicates non-stationary. After difference at lag 1, there is no decay patterns in $\nabla_{1}$$\nabla_{12}$milk.log. Both ACF and PACF plot of $\nabla_{1}$$\nabla_{12}$milk.log indicate a stationary process. 
+
+## *1.2 Model Identification*
+We are going to apply a SARIMA model for this dataset. Since we difference at lag 1 and lag 12, d = 1 and D = 1. The ACF plot of $\nabla_{1}$$\nabla_{12}$milk.log shows spikes at lag 1, 12, 13 and 48. Then it cuts off at lag 48. Lag 13 have values outside of the confidence interval probably because of the influence from lag 1. Therefore, q = 1 and Q = 1 or 4. We see an alternating decaying pattern in PACF, which suggest P = 1 and the model might be a pure MA model. Within lag 12, PACF is significant at lag 1. Therefore, p = 1 and P = 1.
+
+## *1.3 Model Estimation*
+The simplest model suggested by ACF and PACF is $SARIMA(0,1,1)(0,1,4)_{12}$. We start with the simplest model then fix the seasonal parameters and increase the number of p and q to compare the AICc of all the possible models suggested by the two plots .
+
+```{r, include=FALSE}
+a <- AICc(arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,1), period = 12), method = "ML"))
+b<- AICc(arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), method = "ML"))
+```
+
+```{r, echo = FALSE,fig.cap="Comparison of AICc among possible models"}
+AICc_value <- rbind(a,b)
+rownames(AICc_value) <- c("$SARIMA(0,1,1)(0,1,1)_{12}$", "$SARIMA(0,1,1)(0,1,4)_{12}$")
+colnames(AICc_value) <- c("AICc")
+knitr::kable(AICc_value)
+```
+
+$SARIMA(0,1,1)(0,1,4)_{12}$ have the lowest AICc values. Therefore, we are going to pick $SARIMA(0,1,1)(0,1,4)_{12}$ for further analysis. 
+
+## *1.4 Model Identification*
+### Model: $SARIMA(0,1,1)(0,1,1)_{12}$
+```{r}
+arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), method = "ML")
+```
+
+The confidence intervals of sma2 and sma3 contain 0, so they are necessary to be substitued by zero.
+
+```{r}
+arima(milk.log, order=c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), fixed = c(NA,NA,0,0,NA), method="ML")
+```
+
+```{r}
+polyroot(c(1, -0.1729))
+```
+
+The root is outside unit circle, which indicates the model is invertible. 
+
+```{r, include = FALSE}
+fit <- arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), method = "ML")
+res <- residuals(fit)
+```
+
+Then we move on to examine the residual of Model. The residual plot shows no trend, no seasonality, and no visible change of variance. Its mean is approximately zero. 
+
+```{r , echo=FALSE, fig.cap="Time Series Plot of Model 1 $SARIMA(0,1,1)(0,1,4)_{12}$ residual"}
+plot.ts(res, xlab = "")
+abline(h=mean(res1),col = "blue")
+```
+
+The histogram looks normal and center at zero. The majority of the data lies on the qqline.
+
+```{r , echo=FALSE, fig.cap="Model 1 $SARIMA(0,1,1)(0,1,4)_{12}$: *Left*: Histogram of residual; *Right*: Normal Q-Q Plot of residual"}
+par(mfrow=c(1,2))
+hist(res, density = 20, breaks = 20, col = "blue", xlab = "", prob = TRUE, main = "")
+mean <- mean(res)
+std <- sqrt(var(res))
+curve(dnorm(x,mean,std),add = TRUE)
+
+qqnorm(res,main = "", xlab = "")
+qqline(res, col = "blue")
+```
+
+Lag 4 is slightly outside the 95% confidence interval of both the ACF and PACF graph. But it can be count as zero. The remaining lags are all within the confidence interval. We are able to conclude that the residual of Model follows White Noise. 
+
+```{r , echo=FALSE, fig.cap="Model 1 $SARIMA(0,1,1)(0,1,4)_{12}$: *Left*: ACF of residual; *Right*: PACF of residual"}
+par(mfrow=c(1,2))
+acf(res,lag.max=60, main = "", xlab = "")
+pacf(res,lag.max=60, main = "", xlab = "")
+```
+## *1.5 Model Diagnostics*
+### Model: $SARIMA(0,1,1)(0,1,4)_{12}$ 
+Since $\sqrt{156}$ $\approx$ 12.49,  we set lag = 12 to perform model diagnostics. 
+```{r}
+shapiro.test(res)
+Box.test(res,lag = 12, type = c("Box-Pierce"),fitdf = 3) # 3 parameters
+Box.test(res,lag = 12, type = c("Ljung-Box"),fitdf = 3) # 3 parameters
+Box.test(res^2,lag = 12, type = c("Ljung-Box"),fitdf = 0)
+ar(res,aic=TRUE,order.max=NULL, mehod = c("yule-walker"))
+```
+It passes all the diagnostic tests but not Shapiro-Wilk normality test. 
+That's because the originial data is non-gaussian distribution, but the box-cox jenkins is already the best one.
+It cannot pass the Shapiro_Wilk normality test due to the influence of right tail. Also, there are two levergae opints on the right side at my qq-norm, which can affect my residual's normality.
+
+## *1.6 Spectral Analysis*
+```{r, include=FALSE}
+# install.packages("TSA")
+require(TSA)
+```
+
+Before we move on to our final step of forecast, we examine the periodicity of Model residual. There are no dominant spikes shown in the periodogram, which indicates the residual does not have periodicity. In Kolmogorov-Smirnov Test, we also fails to reject the null hypothesis that the residual is white noise.
+
+```{r , echo=FALSE, fig.cap="Model $SARIMA(0,1,1)(0,1,4)_{12}$: *Left*: Periodogram of residual; *Right*: Kolmogorov-Smirnov Test"}
+par(mfrow=c(1,2))
+periodogram(res, main = "")
+abline(h = 0)
+cpgram(res, main = "") 
+```
+\newpage
+```{r}
+fisher.g.test(res)
+```
+
+The fisher test provides us a result of 0.7995265, which fails to reject the null hypothesis that the residual is a Gaussian White Noise. 
+
+After analyzing the residual plots and passing the normality and periodicity test, we are confident to use our model for forecasting. 
+
+Therefore, our final model is $SARIMA(0,1,1)(0,1,4)_{12}$ $$\nabla_{1}\nabla_{12}ln(U_t) = (1-0.1729B)(1-0.6771B^{12}+0.3054B^{48})Z_t$$ with $Zt-WN(0,\sigma_z^2)$  and $\sigma_z^2 = 9.928*10^{-5}$
+
+## *1.7 Data Forecast*
+```{r, include = FALSE}
+fit.1<-arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12),fixed = c(NA,NA,0,0,NA), method = "ML")
+```
+
+
+```{r , echo=FALSE, fig.cap="Forecast on the transformed data by time series"}
+pred.tr <- predict(fit.1, n.ahead = 12)
+U.tr = pred.tr$pred + 2*pred.tr$se
+L.tr = pred.tr$pred - 2*pred.tr$se
+ts.plot(milk.log,xlim = c(1962,1976), xlab = "", ylim= c(6.3,7.0))
+lines(U.tr, col = "blue", lty = "dashed")
+lines(L.tr, col = "blue", lty = "dashed")
+points(pred.tr$pred,col = "red", pch = 1)
+legend("bottomright", c("Prediction","95% C.I."), fill = c("red", "blue"), cex = 1.25)
+```
+```{r , echo=FALSE, fig.cap="Forecast on the original data by time series"}
+pred.orig <- exp(pred.tr$pred)
+U = exp(U.tr)
+L = exp(L.tr)
+ts.plot(c_train, xlim= c(1962,1976), ylim= c(550,1050))
+lines(U, col="blue", lty="dashed")
+lines(L, col="blue", lty="dashed")
+points(pred.orig,col = "red", pch = 1)
+legend("bottomright", c("Prediction","95% C.I."), fill = c("red", "blue"), cex = 1.25)
+```
+
+```{r , echo=FALSE,fig.cap="Zoomed in: Forecast on the original data set by time series"}
+pred.orig <- exp(pred.tr$pred)
+ts.plot(c_train, xlim= c(1973,1976),ylim=c(650,1050))
+lines(U, col="blue", lty="dashed")
+lines(L, col="blue", lty="dashed")
+points(pred.orig,col = "red", pch = 1)
+legend("bottomright", c("Prediction","95% C.I."), fill = c("red", "blue"), cex = 1.25)
+```
+
+
+```{r , echo=FALSE,fig.cap="Zoomed in: Forecast on the original data set by time series with c_test data"}
+pred.orig <- exp(pred.tr$pred)
+ts.plot(milk, xlim= c(1973,1976),ylim=c(600,1050))
+lines(U, col="blue", lty="dashed")
+lines(L, col="blue", lty="dashed")
+points(pred.orig,col = "red", pch = 1)
+points(c_test,col = "black", pch = 20)
+legend("bottomright", c("Prediction","95% C.I.","c_test"), fill = c("red", "blue","black"), cex = 1.25)
+```
+
+We are happy to see that all testing set data are within the 95% confidence interval of our prediction model. Also, the values predicted by the selected model are closed to the actual values, which indicate our model is sufficient and proper to forecast the concentration of carbon dioxide above Mauna Loa, Hawaii.
 
 ```{r}
 # Perform log transformation on c_train

@@ -105,7 +105,7 @@ abline(h=mean(milk.bc_12), col = "blue")
 fit <- lm(milk.bc_12 ~ as.numeric(1:length(milk.bc_12))) 
 #abline(fit, col="red")
 
-plot.ts(milk.log_12_1, main = "bc(U_t) differenced at lag 12, at lag 1")
+plot.ts(milk.bc_12_1, main = "bc(U_t) differenced at lag 12, at lag 1")
 abline(h=mean(milk.bc_12_1), col = "blue")
 fit2 <- lm(milk.bc_12_1 ~ as.numeric(1:length(milk.bc_12_1))) 
 #abline(fit2, col="red")
