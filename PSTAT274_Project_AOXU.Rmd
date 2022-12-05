@@ -22,7 +22,7 @@ library(ggfortify)
 library(forecast)
 library(GeneCycle)
 library(qpcR)
-require(TSA)
+#require(TSA)
 ```
 
 \newpage
@@ -45,7 +45,7 @@ The dataset contains 168 measurements of monthly milk production (pounds per cow
 ##  *1.1 Data Processing*
 The plot of the original data shows repetitive patterns and an increasing trend, which indicate seasonality and non-constant mean. However, it seems the data has stable variance. 
 ```{r, include=FALSE}
-milk <- ts(milk[1:168],start = c(1962,1),frequency = 12)
+milk <- tsdl[[203]]
 ```
 
 ```{r , echo=FALSE, fig.cap="Monthly Measurements of Milk Prodcution Jan 1962 – Dec 1974."}
@@ -55,7 +55,7 @@ plot.ts(milk,xlab = "",main = "")
 
 ```{r, include=FALSE}
 c_train <- ts(milk[1:156],start = c(1962,1),frequency = 12)
-c_test <-ts(co2[157:168],start = c(1975,1),frequency = 12)
+c_test <-ts(milk[157:168],start = c(1975,1),frequency = 12)
 ```
 
 \newpage
@@ -241,7 +241,7 @@ Then we move on to examine the residual of Model. The residual plot shows no tre
 
 ```{r , echo=FALSE, fig.cap="Time Series Plot of Model 1 $SARIMA(0,1,1)(0,1,4)_{12}$ residual"}
 plot.ts(res, xlab = "")
-abline(h=mean(res1),col = "blue")
+abline(h=mean(res),col = "blue")
 ```
 
 The histogram looks normal and center at zero. The majority of the data lies on the qqline.
@@ -276,7 +276,7 @@ ar(res,aic=TRUE,order.max=NULL, mehod = c("yule-walker"))
 ```
 It passes all the diagnostic tests but not Shapiro-Wilk normality test. 
 That's because the originial data is non-gaussian distribution, but the box-cox jenkins is already the best one.
-It cannot pass the Shapiro_Wilk normality test due to the influence of right tail. Also, there are two levergae opints on the right side at my qq-norm, which can affect my residual's normality.
+It cannot pass the Shapiro_Wilk normality test due to the influence of right tail. Also, there are two leverage points on the right side at qq-norm, which can affect my residual's normality.
 
 ## *1.6 Spectral Analysis*
 ```{r, include=FALSE}
@@ -350,7 +350,91 @@ points(c_test,col = "black", pch = 20)
 legend("bottomright", c("Prediction","95% C.I.","c_test"), fill = c("red", "blue","black"), cex = 1.25)
 ```
 
-We are happy to see that all testing set data are within the 95% confidence interval of our prediction model. Also, the values predicted by the selected model are closed to the actual values, which indicate our model is sufficient and proper to forecast the concentration of carbon dioxide above Mauna Loa, Hawaii.
+We are happy to see that all testing set data are within the 95% confidence interval of our prediction model. Also, the values predicted by the selected model are closed to the actual values, which indicate our model is sufficient and proper to forecast milk production.
+
+# **2.0 CONCLUSION**
+After comparing AICc values of two possible models - $SARIMA(0,1,1)(0,1,1)_{12}$ and $SARIMA(0,1,1)(0,1,4)_{12}$. The model $SARIMA(0,1,1)(0,1,4)_{12}$ has smaller AICc and provide credible forecasting results for our data set. It passes all diagnostic tests but not Shapiro-Wilk normality test. That's because the originial data is non-gaussian distribution, but the box-cox jenkins is already the best one. Also, it cannot pass the Shapiro_Wilk normality test due to the influence of right tail. There are two levergae opints on the right side at my qq-norm, which can affect my residual's normality. However, we are still confident to claim that our $SARIMA(0,1,1)(0,1,4)_{12}$ model is appropriate to forecast the monthly measurements of milk production (pounds per cow).
+
+The final model is: 
+$$\nabla_{1}\nabla_{12}ln(U_t) = (1-0.1729B)(1-0.6771B^{12}+0.3054B^{48})Z_t$$ with $$Z_t - WN(0,\sigma_z^2)$$  and $$\sigma_z^2 = 9.928*10^{-5}$$
+\newpage
+# **3.0 REFERENCES**
+Feldman, R. (2021, December). *PSTAT 274 - Lecture 15. Fall 2022*. Santa Barbara; University of California, Santa Barbara. 
+
+Hyndman, R., & Yang, Y. (2018). tsdl: Time Series Data Library. v0.1.0.
+
+# **4.0 APPENDIX**
+
+## 4.1 Library Used
+```{r, eval=FALSE}
+library(tsdl)
+library(forecast)
+library(tidyverse)
+library(MASS)
+library(ggplot2)
+library(ggfortify)
+library(forecast)
+library(GeneCycle)
+library(qpcR)
+require(TSA)
+```
+
+## 4.2 Data Processing
+```{r, eval=FALSE}
+# View the Original Time Series
+milk <- tsdl[[203]]
+plot.ts(milk,xlab = "",main = "")
+# Set up training and testing group
+c_train <- ts(milk[1:156],start = c(1962,1),frequency = 12)
+c_test <-ts(milk[157:168],start = c(1975,1),frequency = 12)
+# Show histogram and acf plot of c_train
+par(mfrow=c(1,2))
+hist(c_train, col = "light blue",main = "")
+acf(c_train, lag.max = 40, main = "")
+# Perform box-cox transformation on c_train
+bcTransform <- boxcox(c_train~as.numeric(1:length(c_train)))
+lambda = bcTransform$x[which(bcTransform$y == max(bcTransform$y))]
+c_train.bc = (1/lambda)*(c_train^lambda-1)
+# Compare c_train and c_train.bc
+par(mfrow=c(2,3))
+plot.ts(c_train,xlab = "", main = "")
+hist(c_train, col = "light blue", xlab = "", main = "")
+qqnorm(c_train, main = "", xlab = "")
+qqline(c_train, col = "red")
+plot.ts(c_train.bc,xlab = "", main = "")
+hist(c_train.bc, col = "light blue", xlab = "", main = "")
+qqnorm(c_train.bc, main = "", xlab = "")
+qqline(c_train.bc, col = "red")
+# Decompose the trend and seasonality of c_train
+y1 <- ts(as.ts(c_train),frequency = 12)
+decomp <- decompose(y1)
+plot(decomp)
+# Remove seasonality and trend
+c_train_12 <- diff(c_train, lag = 12)
+c_train_12_1 <- diff(c_train_12, lag = 1)
+c_train_12_1_1 <- diff(c_train_12_1, lag = 1)
+# To check number differencing
+par(mfrow=c(1,2))
+plot.ts(c_train_12, main = "")
+abline(h=mean(c_train_12), col = "blue")
+plot.ts(c_train_12_1, main = "")
+abline(h=mean(c_train_12_1), col = "blue")
+# Create table to compare variance
+v <- cbind(var(c_train), var(c_train_12), var(c_train_12_1), var(c_train_12_1_1))
+rownames(v) <- "Variance"
+colnames(v) <- c("$U_t$","$\\nabla_{12}$$U_t$",
+                 "$\\nabla_{1}$$\\nabla_{12}$$U_t$",
+                 "$\\nabla_{1}$$\\nabla_{1}$$\\nabla_{12}$$U_t$")
+knitr::kable(v)
+# Compare the ACF and PACF of c_train, c_train_12, and c_train_12_1
+par(mfrow=c(2,3))
+acf(c_train, lag.max = 40, main = expression(U[t]))
+acf(c_train_12, lag.max = 40, main = expression(nabla[12]~~U[t]))
+acf(c_train_12_1, lag.max = 40, main = expression(nabla[1]~nabla[12]~~U[t]))
+pacf(c_train, lag.max = 40, main = "")
+pacf(c_train_12, lag.max = 40, main = "")
+pacf(c_train_12_1, lag.max = 40, main = "")
+```
 
 ```{r}
 # Perform log transformation on c_train
