@@ -191,7 +191,7 @@ knitr::kable(AICc_value)
 $SARIMA(0,1,1)(0,1,4)_{12}$ have the lowest AICc values. Therefore, we are going to pick $SARIMA(0,1,1)(0,1,4)_{12}$ for further analysis. 
 
 ## *1.4 Model Checking*
-### Model: $SARIMA(0,1,1)(0,1,1)_{12}$
+### Model: $SARIMA(0,1,1)(0,1,4)_{12}$
 ```{r}
 arima(milk.log, order = c(0,1,1), seasonal = list(order = c(0,1,4), period = 12), method = "ML")
 ```
@@ -500,9 +500,9 @@ pacf(res,lag.max=60, main = "", xlab = "")
 ```{r, eval=FALSE}
 # Perform test on Model's residual
 shapiro.test(res1)
-Box.test(res1,lag = 20, type = c("Box-Pierce"),fitdf = 2)
-Box.test(res1,lag = 20, type = c("Ljung-Box"),fitdf = 2)
-Box.test(res1^2,lag = 20, type = c("Ljung-Box"),fitdf = 0)
+Box.test(res,lag = 20, type = c("Box-Pierce"),fitdf = 2)
+Box.test(res,lag = 20, type = c("Ljung-Box"),fitdf = 2)
+Box.test(res^2,lag = 20, type = c("Ljung-Box"),fitdf = 0)
 ar(res1,aic=TRUE,order.max=NULL, mehod = c("yule-walker"))
 ```
 
