@@ -1,7 +1,7 @@
 ---
 title: \vspace{8.5cm} **"Time Series Analysis of Monthly Milk Production from Jan. 1962 to Dec. 1975"**
 author: "Ao Xu"
-date: "5 Dec 2022"
+date: "7 Dec 2022"
 output: 
   pdf_document: null
 geometry: margin=1.0in
@@ -37,11 +37,11 @@ attr(tsdl[[203]],"description")
 ```
 
 # **ABSTRACT**
-Based on monthly measurements gathered between the years 1962 and 1975, the time series analysis of milk output (pounds per cow) is performed in this project. The information was gathered in the R tsdl data library and was compiled by Cryer in 1986. The reference number is 203. There are 168 observations in the original dataset. The original dataset was split into two sets. The first 156 observations are in the training set, and the final 12 measurements are in the testing set. Applying the Box-Jenkins methodology, a suitable model is created from the training set to project future values and compare them to values from the testing set. The final model we selected is $SARIMA(0,1,1)(0,1,4)_{12}$. All predicted values fall within the 95% confidence interval according to this model.
+Based on monthly measurements gathered between the years 1962 and 1975, the time series analysis of milk production (pounds per cow) is performed in this project. The information was gathered in the R tsdl data library. The reference number is 203. There are 168 observations in the original dataset. The original dataset was split into two sets. The first 156 observations are in the training set, and the final 12 measurements are in the testing set. Applying the Box-Jenkins methodology, a suitable model is created from the training set to project future values and compare them to values from the testing set. The final model we selected is $SARIMA(0,1,1)(0,1,4)_{12}$. All predicted values fall within the 95% confidence interval according to this model.
 
 # **1.0 INTRODUCTION**
 
-The dataset, which spans the period of January 1962 to December 1975, has 168 measures of monthly milk production (pounds per cow). It is a typical time series dataset with a enough number of observations for analysis and the creation of a prediction model. The original dataset is divided into a training set and a test set so that the prediction model's accuracy can be assessed. Monthly measurements from January 1962 to December 1974 make up the 156 values in the training set (denoted as c_train). Twelve values, representing the monthly measurements from January 1975 to December 1975, make up the testing set (abbreviated c_test). We initially choose many models to estimate their coefficients using the Box-Jenkins approach. Then, by comparing AICcs and using diagnostic testing, we evaluate the models to determine which is best for forecasting. In order to verify the accuracy of our final model, we compare the forecast values to the data from the testing set.
+The dataset, which spans the period of January 1962 to December 1975, has 168 measures of monthly milk production (pounds per cow). It is a typical time series dataset with a enough number of observations for analysis and the creation of a prediction model. The original dataset is divided into a training set and a test set so that the prediction model's accuracy can be assessed. Monthly measurements from January 1962 to December 1974 make up the 156 values in the training set (denoted as c_train). Twelve values, representing the monthly measurements from January 1975 to December 1975, make up the testing set (denoted as c_test). We initially choose many models to estimate their coefficients using the Box-Jenkins approach. Then, by comparing AICcs and using diagnostic testing, we evaluate the models to determine which is best for forecasting. In order to verify the accuracy of our final model, we compare the forecast values to the data from the testing set.
 
 ##  *1.1 Data Processing*
 The original data's plot displays recurring patterns and an upward trend, which point to seasonality and a non-constant mean. It appears that the data's variance is stable, nevertheless.
@@ -128,7 +128,7 @@ milk.log_12_1_1 <- diff(milk.log_12_1, lag=1)
 var(milk.log_12_1_1)
 ```
 
-```{r , echo=FALSE, fig.cap="*Left*: Time Series Plot of $\\nabla12$$ln(U_t($; *Right*: Time Series Plot of $\\nabla1$$\\nabla12$$ln(U_t)$"}
+```{r , echo=FALSE, fig.cap="*Left*: Time Series Plot of $\\nabla12$$ln(U_t)$; *Right*: Time Series Plot of $\\nabla1$$\\nabla12$$ln(U_t)$"}
 par(mfrow=c(1,2))
 plot.ts(milk.log_12, main = "", xlab = "")
 abline(h=mean(milk.log_12), col = "blue")
@@ -308,8 +308,6 @@ lines(L, col="blue", lty="dashed")
 points(pred.orig,col = "red", pch = 1)
 legend("bottomright", c("Prediction","95% C.I."), fill = c("red", "blue"), cex = 1.25)
 ```
-
-\newpage
 
 Then, we zoom in the forecast on the original data by time series.
 
